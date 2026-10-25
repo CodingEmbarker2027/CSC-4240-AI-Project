@@ -1,0 +1,9 @@
+pandas
+numpy
+sentence-transformers
+scipy
+streamlit
+python-docx
+
+matplotlib
+seaborn
