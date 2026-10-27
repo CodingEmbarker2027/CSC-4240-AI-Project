@@ -3,7 +3,12 @@ from src import resume
 
 st.title("AI Resume Matcher")
 
-candidate_id = st.selectbox("Select Candidate", resume.resumes_df["candidate_id"])
+candidate_name_map = dict(zip(resume.resumes_df["candidate_id"], resume.resumes_df["name"]))
+candidate_id = st.selectbox(
+    "Select Candidate",
+    resume.resumes_df["candidate_id"],
+    format_func=lambda selected_candidate_id: candidate_name_map[selected_candidate_id],
+)
 job_title_map = dict(zip(resume.jobs_df["job_id"], resume.jobs_df["title"]))
 job_id = st.selectbox(
     "Select Job",
