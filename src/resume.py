@@ -1,7 +1,9 @@
 import pandas as pd
+from pathlib import Path
 
-jobs_df = pd.read_csv("job_list.csv")
-resumes_df = pd.read_csv("resume_list.csv")
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+jobs_df = pd.read_csv(DATA_DIR / "job_list.csv")
+resumes_df = pd.read_csv(DATA_DIR / "resume_list.csv")
 
 def clean_skills(skill_string):
     if isinstance(skill_string, list):
@@ -104,6 +106,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 

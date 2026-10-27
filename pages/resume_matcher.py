@@ -1,7 +1,5 @@
 import streamlit as st
-import AI
-import UI
-import resume
+from src import resume
 
 st.title("AI Resume Matcher")
 
@@ -16,7 +14,7 @@ job_id = st.selectbox(
 if st.button("Analyze Match"):
     result = resume.match_candidate_to_job(candidate_id, job_id)
 
-    st.write(f"Match Score: {result["overall_score"]:.2f}%")
+    st.write(f"Match Score: {result['overall_score']:.2f}%")
 
     if len(result["matching"]) == 0:
         st.write("Matching Skills: None")

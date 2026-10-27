@@ -34,9 +34,58 @@ Contains reusable backend logic and data processing scripts.
 * **`requirements.txt`**: List of Python dependencies required to run the project.
 * **`.gitignore`**: Specifies intentionally untracked files (like virtual environments and caches) that Git should ignore.
 
-## Setup & Installation
+## Run the local website
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/career-match-ai.git](https://github.com/YOUR_USERNAME/career-match-ai.git)
-   cd career-match-ai
+Open a terminal in the project folder (the folder containing `app.py` and
+`requirements.txt`). The commands below create a virtual environment using
+your default Python installation; they do not hard-code a Python version or
+an installation path.
+
+### First-time setup
+
+**Windows PowerShell:**
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+**macOS/Linux:**
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+On Windows, `py --list` shows the installed Python versions. To select a
+specific installed version, replace `py` in the first command with a launcher
+version such as `py -3.12`. On macOS/Linux, use the appropriate installed
+`python3.x` command instead of `python3` if needed.
+
+If you already created `.venv`, skip the first command. You only need to
+install dependencies again if `requirements.txt` changes.
+
+### Start the website
+
+Whenever you want to run the website, open a terminal in the project folder.
+Use the matching command for your operating system:
+
+**Windows PowerShell:**
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+**macOS/Linux:**
+```bash
+.venv/bin/python -m streamlit run app.py
+```
+
+Open [http://localhost:8501](http://localhost:8501) in your browser (or use
+the `Local URL` printed by Streamlit). Keep the terminal running while using
+the website. Press `Ctrl+C` there to stop it.
+
+The first time you open an AI/NLP page, Sentence Transformers downloads the
+`all-MiniLM-L6-v2` model. An internet connection is needed for this download,
+and that first page load may take longer.

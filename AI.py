@@ -1,17 +1,14 @@
-from PIL.ImageOps import cover
-
-import AI
-import resume
 import re
-import spacy
+from pathlib import Path
+
 import pandas as pd
 import dictionary as dct
 from sentence_transformers import SentenceTransformer, util
 from sklearn.metrics.pairwise import cosine_similarity
+from src import resume
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
-nlp = spacy.load("en_core_web_sm")
-gpt_df = pd.read_csv("gpt_dataset.csv")
+gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
 resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True)
 
 def generate_embedding(text):
@@ -238,7 +235,7 @@ def is_resume(text):
     similarities = util.cos_sim(uploaded_embedding, resume_embeddings)
 
     max_similarity = similarities.max().item()
-    profile = AI.build_candidate_profile_nlp(text)
+    profile = build_candidate_profile_nlp(text)
 
     skill_count = len(profile["skills"])
 
@@ -267,5 +264,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 

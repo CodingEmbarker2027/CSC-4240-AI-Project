@@ -65,7 +65,7 @@ skill_set = {
     "git",
     "linux",
     "jira",
-    "agile"
+    "agile",
     
     # Non-Technical Skills
     "punctuality",
@@ -103,7 +103,7 @@ skill_set = {
 degrees = {
     "master",
     "masters",
-    "master's"
+    "master's",
     "bachelor",
     "bachelors",
     "bachelor's",
@@ -163,10 +163,9 @@ resume_sections = {
     "experience",
     "certifications",
     "certificates",
-    "objective"
+    "objective",
     "volunteer experience",
     "work experience",
     "honors",
     "awards"
 }
-

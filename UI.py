@@ -1,12 +1,8 @@
-from huggingface_hub.cli.upload import upload
+import re
 
-import resume
-import AI
-import streamlit as st
-import dictionary as dct
 import pdfplumber
 from docx import Document
-from sentence_transformers import SentenceTransformer, util
+from src import resume
 
 def extract_pdf_text(file):
     text = ""
@@ -28,7 +24,7 @@ def extract_docx_text(file):
     for paragraph in doc.paragraphs:
         paragraphs.append(paragraph.text.strip())
 
-    return " ".join(paragraphs)
+    return "\n".join(paragraphs)
 
 def extract_sections(paragraphs):
     headers = {
@@ -56,24 +52,32 @@ def extract_sections(paragraphs):
 def build_candidate_function(file_path):
     file_name = file_path.name
 
-    if file_name.endswith(".docx"):
+    if file_name.lower().endswith(".docx"):
         paragraphs = extract_docx_text(file_path)
     else:
         paragraphs = extract_pdf_text(file_path)
 
-    sections = extract_sections(paragraphs)
+    sections = extract_sections(paragraphs.splitlines())
+    experience_text = "\n".join(sections.get("EXPERIENCE", []))
+    experience_match = re.search(r"\b(\d+)\+?\s+years?\b", experience_text, re.IGNORECASE)
+    skills = [
+        skill.strip()
+        for line in sections.get("SKILLS", [])
+        for skill in line.split(",")
+        if skill.strip()
+    ]
 
     return {
-        "skills": sections.get("SKILLS", []),
+        "skills": skills,
         "education": sections.get("EDUCATION", []),
-        "experience": sections.get("EXPERIENCE", []),
+        "experience": int(experience_match.group(1)) if experience_match else 0,
         "projects": sections.get("PROJECTS", [])
     }
 
 def match_uploaded_resume_to_jobs(candidate_profile):
     results = []
 
-    candidate_experience = int(candidate_profile["experience"][0])
+    candidate_experience = candidate_profile["experience"]
 
     for _, job in resume.jobs_df.iterrows():
         result = resume_keyword_match(
@@ -116,7 +120,7 @@ def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp)
     matching = resume_set & job_set
     missing = job_set - resume_set
 
-    skill_score = (len(matching) / len(job_set)) * 100
+    skill_score = (len(matching) / len(job_set)) * 100 if job_set else 0
     experience_score = resume.calculate_experience_score(candidate_exp, required_exp)
 
     if len(matching) == 0:
@@ -129,16 +133,3 @@ def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp)
         "matching": list(matching),
         "missing": list(missing)
     }
-
-def main():
-    pages = [
-        st.Page("pages/resume_matcher.py", title="Resume Matcher"),
-        st.Page("pages/ai_analytics.py", title="AI/NLP Analytics"),
-        st.Page("pages/model_evaluation.py", title="Model Evaluations")
-    ]
-
-    pg = st.navigation(pages)
-    pg.run()
-
-if __name__ == "__main__":
-    main()

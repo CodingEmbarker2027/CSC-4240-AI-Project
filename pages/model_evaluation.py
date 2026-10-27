@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
-import resume
 import AI
 from collections import Counter
 import streamlit as st
 import seaborn as sns
 import pandas as pd
 from sklearn.metrics import confusion_matrix
+from src import resume
 
 resume_skills = []
 

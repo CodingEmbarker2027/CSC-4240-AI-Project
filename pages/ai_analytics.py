@@ -27,11 +27,11 @@ if uploaded_file is not None:
         resume_text = UI.extract_pdf_text(uploaded_file)
 
     result = AI.is_resume(resume_text)
-    st.write(f"Resume Confidence: {result["resume_confidence"]:.2f}")
-    st.write(f"Sections: {result["section_count"]}")
-    st.write(f"Cover Letter Hits: {result["cover_letter_hits"]}")
-    st.write(f"Skill Count: {result["skill_count"]}")
-    st.write(f"Score: {result["score"]}")
+    st.write(f"Resume Confidence: {result['resume_confidence']:.2f}")
+    st.write(f"Sections: {result['section_count']}")
+    st.write(f"Cover Letter Hits: {result['cover_letter_hits']}")
+    st.write(f"Skill Count: {result['skill_count']}")
+    st.write(f"Score: {result['score']}")
 
     if result["is_resume"]:
         st.success("This is a resume")
