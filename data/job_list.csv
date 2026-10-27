@@ -12,5 +12,5 @@ job_id,title,experience_required,skills
 11,AI Architect,4,"Python,Java,C,Copilot,ChatGPT"
 12,Python Developer,2,"Python,Django,Flask,SQL,Postgres,Git,Docker,Linux"
 13,Full Stack Developer,3,"HTML,CSS,JavaScript,React,NodeJS,Express,MongoDB,SQL,Git,Docker"
-14,Mobile App Developer,2,"Java,Kotlin,Swift,Flutter,Git,Android Studio"
+14,Mobile App Developer (iOS/Android),2,"Java,Kotlin,Swift,Flutter,Git,Android Studio"
 15,Cloud Engineer,4,"AWS,Azure,Docker,Kubernetes,Linux,Python"

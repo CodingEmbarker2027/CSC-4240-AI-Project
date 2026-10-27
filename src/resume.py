@@ -1,8 +1,4 @@
 import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from collections import Counter
 
 jobs_df = pd.read_csv("job_list.csv")
 resumes_df = pd.read_csv("resume_list.csv")
@@ -105,54 +101,6 @@ def main():
              "Missing Skills:",
              ", ".join(job["missing_skills"])
          )
-
-    heatmap_data = []
-
-    for _, candidate in resumes_df.iterrows():
-        candidate_scores = []
-
-        for _, job in jobs_df.iterrows():
-            result = keyword_match(
-                candidate["skills"],
-                job["skills"],
-                candidate["experience_years"],
-                job["experience_required"]
-            )
-
-            candidate_scores.append(result["overall_score"])
-
-        heatmap_data.append(candidate_scores)
-
-    heatmap_df = pd.DataFrame(
-        heatmap_data,
-        index=resumes_df["name"],
-        columns=jobs_df["title"]
-    )
-
-    top_candidates = (
-        heatmap_df.max(axis=1)
-        .sort_values(ascending=False)
-        .head(15)
-        .index
-    )
-
-    top_heatmap = heatmap_df.loc[top_candidates]
-
-    plt.figure(figsize=(12, 6))
-
-    sns.heatmap(
-        top_heatmap,
-        annot=True,
-        cmap="viridis",
-        fmt=".1f"
-    )
-
-    plt.title("Candidate vs Job Match Scores")
-    plt.xlabel("Jobs")
-    plt.ylabel("Candidates")
-
-    plt.tight_layout()
-    plt.show()
 
 if __name__ == "__main__":
     main()
