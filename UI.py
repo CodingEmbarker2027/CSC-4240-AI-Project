@@ -1,6 +1,7 @@
 import re
-
+import AI
 import pdfplumber
+import dictionary as dct
 from docx import Document
 from src import resume
 
@@ -27,51 +28,39 @@ def extract_docx_text(file):
     return "\n".join(paragraphs)
 
 def extract_sections(paragraphs):
-    headers = {
-        "EDUCATION",
-        "SKILLS",
-        "EXPERIENCE",
-        "PROJECTS"
-    }
-
     sections = {}
 
     current_section = None
 
     for line in paragraphs:
-        line_upper = line.upper()
+        line_lower = line.lower()
 
-        if line_upper in headers:
-            current_section = line_upper
+        found_section = None
+
+        for section_name, patterns in dct.section_patterns.items():
+            if line_lower in patterns:
+                found_section = section_name
+                break
+        if found_section:
+            current_section = found_section
             sections[current_section] = []
         elif current_section:
-            sections[current_section].append(line)
-
+            sections[current_section].append(line.strip())
     return sections
 
 def build_candidate_function(file_path):
     file_name = file_path.name
 
-    if file_name.lower().endswith(".docx"):
-        paragraphs = extract_docx_text(file_path)
+    if file_name.endswith(".docx"):
+        resume_text = extract_docx_text(file_path)
     else:
-        paragraphs = extract_pdf_text(file_path)
-
-    sections = extract_sections(paragraphs.splitlines())
-    experience_text = "\n".join(sections.get("EXPERIENCE", []))
-    experience_match = re.search(r"\b(\d+)\+?\s+years?\b", experience_text, re.IGNORECASE)
-    skills = [
-        skill.strip()
-        for line in sections.get("SKILLS", [])
-        for skill in line.split(",")
-        if skill.strip()
-    ]
+        resume_text = extract_pdf_text(file_path)
 
     return {
-        "skills": skills,
-        "education": sections.get("EDUCATION", []),
-        "experience": int(experience_match.group(1)) if experience_match else 0,
-        "projects": sections.get("PROJECTS", [])
+        "skills": AI.extract_skills_nlp(resume_text),
+        "education": AI.extract_education_nlp(resume_text),
+        "experience": AI.experience_years_nlp(resume_text),
+        "candidate_text": resume_text
     }
 
 def match_uploaded_resume_to_jobs(candidate_profile):

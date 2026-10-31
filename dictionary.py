@@ -153,7 +153,13 @@ cover_letter_phrases = {
     "i am writing",
     "thank you for your consideration",
     "sincerely",
-    "regards"
+    "regards",
+    "dear",
+    "dear recruiter",
+    "warm regards",
+    "please accept",
+    "opportunity",
+    "look forward to hearing"
 }
 
 resume_sections = {
@@ -169,3 +175,54 @@ resume_sections = {
     "honors",
     "awards"
 }
+<<<<<<< HEAD
+=======
+
+section_patterns = {
+    "education": [
+        "education",
+        "academic background",
+        "coursework"
+    ],
+
+    "skills": [
+        "skills",
+        "technical skills",
+        "core competencies",
+        "technical proficiencies"
+    ],
+
+    "experience": [
+        "experience",
+        "work history",
+        "employment history",
+        "professional experience"
+    ],
+
+    "projects": [
+        "projects",
+        "personal projects",
+        "academic projects"
+    ]
+}
+
+interview_phrases = {
+    "situation",
+    "situation:"
+    "task",
+    "task:"
+    "action",
+    "action:"
+    "result",
+    "result:"
+}
+
+research_phrases = {
+    "recruiter",
+    "college recruiter",
+    "corporate selections",
+    "marketing manager",
+    "university relations",
+    "site development leader"
+}
+>>>>>>> 505ab15 (Update on files)

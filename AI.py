@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+from PIL.ImageOps import cover
+
+from src import resume
+>>>>>>> 505ab15 (Update on files)
 import re
 from pathlib import Path
 
@@ -8,7 +14,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from src import resume
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
+<<<<<<< HEAD
 gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
+=======
+nlp = spacy.load("en_core_web_sm")
+gpt_df = pd.read_csv("data/gpt_dataset.csv")
+>>>>>>> 505ab15 (Update on files)
 resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True)
 
 def generate_embedding(text):
@@ -230,6 +241,8 @@ def calculate_top_n_accuracy(gpt, jobs_df):
 def is_resume(text):
     section_count = sum(1 for section in dct.resume_sections if section in text.lower())
     cover_letter_hits = sum(1 for phrase in dct.cover_letter_phrases if phrase in text.lower())
+    interview_hits = sum(1 for phrase in dct.interview_phrases if phrase in text.lower())
+    research_hits = sum(text.lower().count(term) for term in dct.research_phrases)
 
     uploaded_embedding = model.encode(text, convert_to_tensor=True)
     similarities = util.cos_sim(uploaded_embedding, resume_embeddings)
@@ -249,12 +262,18 @@ def is_resume(text):
         score += 1
     if cover_letter_hits >= 2:
         score -= 2
+    if interview_hits >= 2:
+        score -= 3
+    if research_hits >= 2:
+        score -= 3
 
     return {
         "is_resume": score >= 2,
         "resume_confidence": max_similarity,
         "section_count": section_count,
         "cover_letter_hits": cover_letter_hits,
+        "interview_hits": interview_hits,
+        "research_hits": research_hits,
         "skill_count": skill_count,
         "score": score
     }

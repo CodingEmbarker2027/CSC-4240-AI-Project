@@ -1,9 +1,14 @@
 import pandas as pd
 from pathlib import Path
 
+<<<<<<< HEAD
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 jobs_df = pd.read_csv(DATA_DIR / "job_list.csv")
 resumes_df = pd.read_csv(DATA_DIR / "resume_list.csv")
+=======
+jobs_df = pd.read_csv("data/job_list.csv")
+resumes_df = pd.read_csv("data/resume_list.csv")
+>>>>>>> 505ab15 (Update on files)
 
 def clean_skills(skill_string):
     if isinstance(skill_string, list):
