@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-=======
-from PIL.ImageOps import cover
-
-from src import resume
->>>>>>> 505ab15 (Update on files)
 import re
 from pathlib import Path
-
 import pandas as pd
 import dictionary as dct
 from sentence_transformers import SentenceTransformer, util
@@ -14,13 +7,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from src import resume
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
-<<<<<<< HEAD
 gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
-=======
-nlp = spacy.load("en_core_web_sm")
-gpt_df = pd.read_csv("data/gpt_dataset.csv")
->>>>>>> 505ab15 (Update on files)
+
 resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True)
+interview_embeddings = model.encode(dct.INTERVIEW_EXAMPLES, convert_to_tensor=True)
+cover_letter_embeddings = model.encode(dct.COVER_LETTER_EXAMPLES, convert_to_tensor=True)
+research_embeddings = model.encode(dct.RESEARCH_EXAMPLES, convert_to_tensor=True)
 
 def generate_embedding(text):
     return model.encode(text, convert_to_tensor=True)
@@ -238,44 +230,60 @@ def calculate_top_n_accuracy(gpt, jobs_df):
         "Top-5": (top5 / total) * 100
     }
 
-def is_resume(text):
+def classify_document(text):
+    uploaded_embedding = model.encode(text, convert_to_tensor=True)
+    scores = {}
+
+    print(repr(text[:2000]))
+
+    resume_similarities = util.cos_sim(uploaded_embedding, resume_embeddings)
+    scores["Cover Letter"] = util.cos_sim(uploaded_embedding, cover_letter_embeddings).max().item()
+    scores["Interview Notes"] = util.cos_sim(uploaded_embedding, interview_embeddings).max().item()
+    scores["Research Notes"] = util.cos_sim(uploaded_embedding, research_embeddings).max().item()
+
+    scores["Resume"] = (resume_similarities.max().item() * 0.7 + resume_similarities.mean().item() * 0.3)
+
     section_count = sum(1 for section in dct.resume_sections if section in text.lower())
     cover_letter_hits = sum(1 for phrase in dct.cover_letter_phrases if phrase in text.lower())
     interview_hits = sum(1 for phrase in dct.interview_phrases if phrase in text.lower())
     research_hits = sum(text.lower().count(term) for term in dct.research_phrases)
 
-    uploaded_embedding = model.encode(text, convert_to_tensor=True)
-    similarities = util.cos_sim(uploaded_embedding, resume_embeddings)
+    email_found = bool(re.search(r'\S+@\S+', text))
+    phone_found = bool(re.search(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}', text))
 
-    max_similarity = similarities.max().item()
-    profile = build_candidate_profile_nlp(text)
+    if section_count >= 4:
+        scores["Resume"] += 0.40
+    elif section_count >= 2:
+        scores["Resume"] += 0.20
+    if email_found:
+        scores["Resume"] += 0.10
+    if phone_found:
+        scores["Resume"] += 0.10
 
-    skill_count = len(profile["skills"])
-
-    score = 0
-
-    if max_similarity >= 0.45:
-        score += 1
-    if skill_count >= 2:
-        score += 1
-    if section_count >= 2:
-        score += 1
     if cover_letter_hits >= 2:
-        score -= 2
+        scores["Cover Letter"] += 0.30
     if interview_hits >= 2:
-        score -= 3
+        scores["Interview Notes"] += 0.40
     if research_hits >= 2:
-        score -= 3
+        scores["Research Notes"] += 0.60
+
+    print(scores)
+
+    document_type = max(scores, key=scores.get)
+
+    confidence = scores[document_type]
+
+    if confidence < 0.30:
+        document_type = "Unknown"
 
     return {
-        "is_resume": score >= 2,
-        "resume_confidence": max_similarity,
+        "document_type": document_type,
+        "confidence": confidence,
+        "scores": scores,
         "section_count": section_count,
         "cover_letter_hits": cover_letter_hits,
         "interview_hits": interview_hits,
         "research_hits": research_hits,
-        "skill_count": skill_count,
-        "score": score
     }
 
 def main():

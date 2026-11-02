@@ -1,9 +1,4 @@
 import streamlit as st
-<<<<<<< HEAD
-=======
-import AI
-import UI
->>>>>>> 505ab15 (Update on files)
 from src import resume
 
 st.title("AI Resume Matcher")

@@ -153,12 +153,11 @@ cover_letter_phrases = {
     "i am writing",
     "thank you for your consideration",
     "sincerely",
-    "regards",
+    "warm regards",
     "dear",
     "dear recruiter",
     "warm regards",
     "please accept",
-    "opportunity",
     "look forward to hearing"
 }
 
@@ -173,10 +172,21 @@ resume_sections = {
     "volunteer experience",
     "work experience",
     "honors",
-    "awards"
+    "awards",
+    "contact",
+    "contact information",
+    "technical skills",
+    "work history",
+    "employment history",
+    "professional experience",
+    "summary",
+    "profile",
+    "relevant coursework",
+    "activities",
+    "leadership",
+    "extracurriculars",
+    "languages"
 }
-<<<<<<< HEAD
-=======
 
 section_patterns = {
     "education": [
@@ -208,11 +218,11 @@ section_patterns = {
 
 interview_phrases = {
     "situation",
-    "situation:"
+    "situation:",
     "task",
-    "task:"
+    "task:",
     "action",
-    "action:"
+    "action:",
     "result",
     "result:"
 }
@@ -223,6 +233,114 @@ research_phrases = {
     "corporate selections",
     "marketing manager",
     "university relations",
-    "site development leader"
+    "hiring manager",
+    "site development leader",
+    "years in industry",
+    "worked there since",
+    "attend hiring events",
+    "career fair",
+    "career days"
 }
->>>>>>> 505ab15 (Update on files)
+
+contact_phrases = {
+    "@",
+    "phone",
+    "email",
+    "address",
+
+    "(931)",
+    "(615)",
+    "(865)"
+}
+
+DOCUMENT_TYPES = {
+    "Resume",
+    "Cover Letter",
+    "Interview Notes",
+    "Research Notes",
+    "Other"
+}
+
+COVER_LETTER_EXAMPLES = [
+
+"""
+Dear Hiring Manager,
+
+I am writing to express my interest in
+the Software Developer position.
+
+Thank you for your consideration.
+
+Sincerely,
+John Doe
+""",
+
+"""
+Dear Recruiter,
+
+Please accept my application for the
+Data Analyst role.
+
+I look forward to hearing from you.
+
+Best Regards
+"""
+]
+
+INTERVIEW_EXAMPLES = [
+
+"""
+Tell me about yourself.
+
+Situation:
+Task:
+Action:
+Result:
+""",
+
+"""
+Describe a time you encountered a problem.
+
+Situation:
+Task:
+Action:
+Result:
+""",
+
+"""
+What motivates you?
+
+Situation:
+Task:
+Action:
+Result:
+"""
+]
+
+RESEARCH_EXAMPLES = [
+
+"""
+Company Contacts
+
+Recruiter:
+Marketing Manager:
+University Relations:
+""",
+
+"""
+Career Fair Notes
+
+Campus Recruiter
+Hiring Manager
+
+Worked there since 2014
+""",
+
+"""
+Employer Research
+
+Company:
+Recruiter:
+Job Opportunities:
+"""
+]

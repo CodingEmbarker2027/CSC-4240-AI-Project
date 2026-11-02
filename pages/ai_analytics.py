@@ -12,17 +12,12 @@ if uploaded_file is not None:
     else:
         resume_text = UI.extract_pdf_text(uploaded_file)
 
-    result = AI.is_resume(resume_text)
-<<<<<<< HEAD
-    st.write(f"Resume Confidence: {result['resume_confidence']:.2f}")
-    st.write(f"Sections: {result['section_count']}")
-    st.write(f"Cover Letter Hits: {result['cover_letter_hits']}")
-    st.write(f"Skill Count: {result['skill_count']}")
-    st.write(f"Score: {result['score']}")
-=======
->>>>>>> 505ab15 (Update on files)
+    result = AI.classify_document(resume_text)
 
-    if result["is_resume"]:
+    st.write(f"Detected Type: {result['document_type']}")
+    st.write(f"Confidence: {result['confidence']}")
+
+    if result["document_type"] == "Resume":
         candidate_profile = UI.build_candidate_function(uploaded_file)
         results = UI.match_uploaded_resume_to_jobs(candidate_profile)
 
@@ -47,7 +42,7 @@ if uploaded_file is not None:
         # st.write("Matching Skills:", ", ".join(job["matching_skills"]))
         # st.write("Missing Skills:", ", ".join(job["missing_skills"]))
     else:
-        st.error("This is not a resume")
+        st.error(f"This appears to be a {result['document_type']}")
 
 else:
     st.info("Please upload a resume")
