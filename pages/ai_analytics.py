@@ -1,5 +1,6 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+from src import resume
 import UI
 import AI
 
@@ -14,28 +15,20 @@ if uploaded_file is not None:
 
     result = AI.classify_document(resume_text)
 
-    st.write(f"Detected Type: {result['document_type']}")
-    st.write(f"Confidence: {result['confidence']}")
-
     if result["document_type"] == "Resume":
         candidate_profile = UI.build_candidate_function(uploaded_file)
-        results = UI.match_uploaded_resume_to_jobs(candidate_profile)
+        results = AI.get_ranked_jobs(candidate_profile, resume.jobs_df)
 
-        top_jobs = results[:5]
+        top_job = results[0]
 
-        titles = [job["job_title"] for job in top_jobs]
-        scores = [job["overall_score"] for job in top_jobs]
+        st.success(f"Top Job: {top_job['title']}")
 
-        fig, ax = plt.subplots(figsize=(10, 5))
+        st.subheader("Other Jobs Recommended")
 
-        ax.bar(titles, scores, color="purple")
-        ax.invert_yaxis()
+        for job in results[1:4]:
+            st.write(f"- {job['title']}")
 
-        ax.set_xlabel("Match Score (%)")
-        ax.set_ylabel("Top Job Recommendations")
-
-        plt.show()
-        st.pyplot(plt)
+        st.session_state["job_results"] = results
 
     # st.subheader(job["job_title"])
         # st.write(f"Match Score: {job['overall_score']:.2f}%")

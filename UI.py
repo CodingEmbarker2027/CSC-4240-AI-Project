@@ -20,12 +20,20 @@ def extract_pdf_text(file):
 def extract_docx_text(file):
     doc = Document(file)
 
-    paragraphs = []
+    text_parts = []
 
     for paragraph in doc.paragraphs:
-        paragraphs.append(paragraph.text.strip())
+        if paragraph.text.strip():
+            text_parts.append(paragraph.text.strip())
 
-    return "\n".join(paragraphs)
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                if cell.text.strip():
+                    text_parts.append(cell.text.strip())
+
+    final_text = "\n".join(text_parts)
+    return final_text
 
 def extract_sections(paragraphs):
     sections = {}

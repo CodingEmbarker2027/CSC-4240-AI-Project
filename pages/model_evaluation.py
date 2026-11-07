@@ -1,208 +1,96 @@
 import matplotlib.pyplot as plt
-import AI
-from collections import Counter
 import streamlit as st
-import seaborn as sns
-import pandas as pd
+import numpy as np
 from sklearn.metrics import confusion_matrix
 from src import resume
 
-resume_skills = []
+if "job_results" not in st.session_state:
+    st.warning("Please upload a resume first")
+    st.stop()
 
-for skills in resume.resumes_df["skills"]:
-    resume_skills.extend(
-        skill.strip()
-        for skill in skills.split(",")
-    )
+results = st.session_state["job_results"]
 
-job_skills = []
+st.header("Resume Results")
+st.divider()
 
-for skills in resume.jobs_df["skills"]:
-    job_skills.extend(
-        skill.strip()
-        for skill in skills.split(",")
-    )
+top_job = results[0]
+top_jobs = results[:4]
 
-resume_counts = Counter(resume_skills)
-job_counts = Counter(job_skills)
-
-top_skills = resume_counts.most_common(10)
-
-skills = [x[0] for x in top_skills]
-counts = [x[1] for x in top_skills]
-
-plt.figure(figsize=(10, 5))
-plt.bar(skills, counts)
-plt.title("Most Common Skills")
-plt.xticks(rotation=45)
-plt.show()
-
-st.pyplot(plt)
-
-all_skills = set(list(resume_counts.keys()) + list(job_counts.keys()))
-skills = sorted(all_skills)
-
-resume_values = [resume_counts.get(skill, 0) for skill in skills]
-job_values = [job_counts.get(skill, 0) for skill in skills]
-
-x = range(len(skills))
-width = 0.4
-
-plt.figure(figsize=(12, 6))
-
-plt.bar(
-    [i - width / 2 for i in x],
-    resume_values,
-    width=width,
-    label="Candidate Supply"
-)
-
-plt.bar(
-    [i + width / 2 for i in x],
-    job_values,
-    width=width,
-    label="Job Demand"
-)
-
-plt.title("Candidate Skills vs Job Demand")
-plt.xlabel("Skills")
-plt.ylabel("Frequency")
-
-plt.xticks(x, skills, rotation=45)
-plt.legend()
-plt.tight_layout()
-plt.show()
-
-st.pyplot(plt)
-
-scores = []
-
-for _, candidate in resume.resumes_df.iterrows():
-    for _, job in resume.jobs_df.iterrows():
-        result = resume.keyword_match(
-            candidate["skills"],
-            job["skills"],
-            candidate["experience_years"],
-            job["experience_required"]
-        )
-
-        scores.append(result["overall_score"])
-
-plt.figure(figsize=(12, 6))
-plt.hist(scores, bins=10, edgecolor="black")
-
-plt.title("Match Score Distribution")
-plt.xlabel("Match Score (%)")
-plt.ylabel("Number of Matches")
-
-plt.grid(axis="y", alpha=0.3)
-plt.show()
-
-st.pyplot(plt)
-
-heatmap_data = []
-
-for _, candidate in resume.resumes_df.iterrows():
-    candidate_scores = []
-
-    for _, job in resume.jobs_df.iterrows():
-        result = resume.keyword_match(
-            candidate["skills"],
-            job["skills"],
-            candidate["experience_years"],
-            job["experience_required"]
-        )
-
-        candidate_scores.append(result["overall_score"])
-
-    heatmap_data.append(candidate_scores)
-
-heatmap_df = pd.DataFrame(
-    heatmap_data,
-    index=resume.resumes_df["name"],
-    columns=resume.jobs_df["title"]
-)
-
-top_candidates = (
-    heatmap_df.max(axis=1)
-    .sort_values(ascending=False)
-    .head(15)
-    .index
-)
-
-top_heatmap = heatmap_df.loc[top_candidates]
-
-plt.figure(figsize=(12, 6))
-
-sns.heatmap(
-    top_heatmap,
-    annot=True,
-    cmap="viridis",
-    fmt=".1f"
-)
-
-plt.title("Candidate vs Job Match Scores")
-plt.xlabel("Jobs")
-plt.ylabel("Candidates")
-
-plt.tight_layout()
-plt.show()
-
-st.pyplot(plt)
-
-actuals = []
-predictions = []
-
-for _, candidate in AI.gpt_df.iterrows():
-    profile = AI.build_candidate_profile_nlp(candidate["Resume"])
-    prediction = AI.predict_job_category(profile, resume.jobs_df)
-
-    actuals.append(candidate["Category"])
-    predictions.append(prediction["predicted_job"])
-
-categories = sorted(set(actuals) | set(predictions))
-
-cm = confusion_matrix(actuals, predictions, labels=categories)
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=categories, yticklabels=categories)
-
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.title("Resume Category Prediction")
-plt.show()
-
-results = AI.calculate_top_n_accuracy(AI.gpt_df, resume.jobs_df)
-labels = list(results.keys())
-values = list(results.values())
-
-plt.figure(figsize=(8, 5))
-plt.bar(labels, values)
-plt.xlabel("Recommendation Rank")
-plt.ylabel("Accuracy")
-plt.title("Top-N Recommendation Accuracy")
-plt.ylim(0, 100)
-plt.show()
-
-st.pyplot(plt)
-
-candidate = AI.gpt_df.iloc[0]
-
-profile = AI.build_candidate_profile_nlp(candidate["Resume"])
-
-ranked_jobs = AI.get_ranked_jobs(profile, resume.jobs_df)
-
-top_jobs = ranked_jobs[:5]
-job_titles = [job["title"] for job in top_jobs]
+titles = [job["title"] for job in top_jobs]
 scores = [job["score"] for job in top_jobs]
 
-plt.figure(figsize=(10, 6))
-plt.barh(job_titles, scores)
+fig, ax = plt.subplots(figsize=(10, 5))
 
-plt.xlabel("Match Score")
-plt.ylabel("Job Score")
-plt.title("Top 5 Recommended Jobs")
+ax.bar(titles, scores, color="purple")
+ax.invert_yaxis()
 
-plt.gca().invert_yaxis()
-plt.tight_layout()
+ax.set_xlabel("Match Score (%)")
+ax.set_ylabel("Top Job Recommendations")
+
 plt.show()
-
 st.pyplot(plt)
+
+st.header("Radar Plot Customizer")
+st.divider()
+
+selected_title = st.selectbox("Analyze Job", [job["title"] for job in results[:4]])
+selected_job = next(job for job in results if job["title"] == selected_title)
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Skill Score", f"{selected_job['skill_score']:.2f}")
+col2.metric("Semantic Score", f"{selected_job['semantic_score']:.2f}")
+col3.metric("Experience Score", f"{selected_job['experience_score']:.2f}")
+
+categories = [
+    "Skills",
+    "Semantics",
+    "Experience"
+]
+
+values = [
+    selected_job["skill_score"],
+    selected_job["semantic_score"],
+    selected_job["experience_score"]
+]
+
+values += values[:1]
+
+angles = np.linspace(
+    0,
+    2 * np.pi,
+    len(categories),
+    endpoint=False
+).tolist()
+
+angles += angles[:1]
+
+if top_job["score"] >= 85:
+    color = "green"
+elif top_job["score"] >= 70:
+    color = "orange"
+else:
+    color = "red"
+
+figure, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+ax.plot(angles, values, color=color, linewidth=2)
+ax.fill(angles, values, color=color, alpha=0.25)
+ax.set_xticks(angles[:-1])
+ax.set_xticklabels(categories)
+
+plt.title("Best Job Match Breakdown")
+st.pyplot(figure)
+
+weakest = min(
+    [
+        ("Skills", top_job["skill_score"]),
+        ("Semantic", top_job["semantic_score"]),
+        ("Experience", top_job["experience_score"])
+    ],
+    key=lambda x: x[1]
+)
+
+st.info(f"Primary improvement area: {weakest[0]}")
+
+
+

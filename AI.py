@@ -4,9 +4,14 @@ import pandas as pd
 import dictionary as dct
 from sentence_transformers import SentenceTransformer, util
 from sklearn.metrics.pairwise import cosine_similarity
+import streamlit as st
 from src import resume
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+@st.cache_resource
+def load_model():
+    return SentenceTransformer("all-MiniLM-L6-v2")
+model = load_model()
+
 gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
 
 resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True)
@@ -138,11 +143,33 @@ def calculate_skill_score(candidate_profile, job):
         "missing": list(missing)
     }
 
-def ai_nlp_match_score(candidate_profile, job):
-    candidate_text = build_nlp_candidate(candidate_profile)
-    job_text = build_job_text(job)
+def get_ranked_jobs(profile, jobs_df):
+    ranked_jobs = []
 
-    semantic_score = calculate_semantic_score(candidate_text, job_text)
+    candidate_embedding = generate_embedding(build_nlp_candidate(profile))
+
+    for _, job in jobs_df.iterrows():
+        result = ai_nlp_match_score(profile, job, candidate_embedding)
+
+        ranked_jobs.append({
+            "title": job["title"],
+            "score": result["final_score"],
+            "semantic_score": result["semantic_score"],
+            "experience_score": result["experience_score"],
+            "skill_score": result["skill_score"]
+        })
+
+    ranked_jobs.sort(
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    return ranked_jobs
+
+def ai_nlp_match_score(candidate_profile, job, candidate_embedding):
+    job_embedding = generate_embedding(build_job_text(job))
+
+    semantic_score = calculate_semantic_score(candidate_embedding, job_embedding)
 
     experience_score = resume.calculate_experience_score(
         candidate_profile["experience"],
@@ -161,10 +188,7 @@ def ai_nlp_match_score(candidate_profile, job):
         "final_score": final_score
     }
 
-def calculate_semantic_score(candidate_text, job_text):
-    candidate_embedding = generate_embedding(candidate_text)
-    job_embedding = generate_embedding(job_text)
-
+def calculate_semantic_score(candidate_embedding, job_embedding):
     similarity = util.cos_sim(candidate_embedding, job_embedding)
 
     return similarity.item() * 100
@@ -185,56 +209,9 @@ def predict_job_category(profile, jobs_df):
         "score": best_score
     }
 
-def get_ranked_jobs(profile, jobs_df):
-    ranked_jobs = []
-
-    for _, job in jobs_df.iterrows():
-        result = ai_nlp_match_score(profile, job)
-
-        ranked_jobs.append({
-            "title": job["title"],
-            "score": result["final_score"]
-        })
-
-    ranked_jobs.sort(key=lambda x: x["score"], reverse=True)
-
-    return ranked_jobs
-
-def calculate_top_n_accuracy(gpt, jobs_df):
-    top1 = 0
-    top3 = 0
-    top5 = 0
-
-    total = len(gpt)
-
-    for _, candidate in gpt.iterrows():
-        profile = build_candidate_profile_nlp(candidate["Resume"])
-
-        ranked_jobs = get_ranked_jobs(profile, jobs_df)
-        actual = candidate["Category"]
-
-        top_1_jobs = [x["title"] for x in ranked_jobs[:1]]
-        top_3_jobs = [x["title"] for x in ranked_jobs[:3]]
-        top_5_jobs = [x["title"] for x in ranked_jobs[:5]]
-
-        if actual in top_1_jobs:
-            top1 += 1
-        if actual in top_3_jobs:
-            top3 += 1
-        if actual in top_5_jobs:
-            top5 += 1
-
-    return {
-        "Top-1": (top1 / total) * 100,
-        "Top-3": (top3 / total) * 100,
-        "Top-5": (top5 / total) * 100
-    }
-
 def classify_document(text):
     uploaded_embedding = model.encode(text, convert_to_tensor=True)
     scores = {}
-
-    print(repr(text[:2000]))
 
     resume_similarities = util.cos_sim(uploaded_embedding, resume_embeddings)
     scores["Cover Letter"] = util.cos_sim(uploaded_embedding, cover_letter_embeddings).max().item()
@@ -266,8 +243,6 @@ def classify_document(text):
         scores["Interview Notes"] += 0.40
     if research_hits >= 2:
         scores["Research Notes"] += 0.60
-
-    print(scores)
 
     document_type = max(scores, key=scores.get)
 
