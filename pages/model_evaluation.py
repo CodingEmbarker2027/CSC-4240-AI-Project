@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
 from sklearn.metrics import confusion_matrix
-from src import resume
 
 if "job_results" not in st.session_state:
     st.warning("Please upload a resume first")
@@ -11,7 +10,6 @@ if "job_results" not in st.session_state:
 results = st.session_state["job_results"]
 
 st.header("Resume Results")
-st.divider()
 
 top_job = results[0]
 top_jobs = results[:4]
@@ -30,8 +28,9 @@ ax.set_ylabel("Top Job Recommendations")
 plt.show()
 st.pyplot(plt)
 
-st.header("Radar Plot Customizer")
 st.divider()
+
+st.header("Radar Plot Customizer")
 
 selected_title = st.selectbox("Analyze Job", [job["title"] for job in results[:4]])
 selected_job = next(job for job in results if job["title"] == selected_title)
@@ -90,7 +89,43 @@ weakest = min(
     key=lambda x: x[1]
 )
 
-st.info(f"Primary improvement area: {weakest[0]}")
+if weakest[0] == "Semantic":
+    st.warning("""
+    The candidate has many required qualifications, but
+    the overall resume narrative does not strongly align
+    with this career path.
+    """)
+elif weakest[0] == "Skills":
+    st.warning("""
+    The candidate appears to be a good fit for this role, but
+    there are notable gaps in the required technical skill set.
+    """)
+elif weakest[0] == "Experience":
+    st.warning("""
+    The candidate possesses many of the necessary skills
+    for this role, but may need additional professional
+    experience to meet typical industry expectations.
+    """)
 
+st.divider()
 
+st.header("Semantic Similarity Heatmap")
+semantic_scores = [job["semantic_score"] for job in results[:10]]
+job_titles = [job["title"] for job in results[:10]]
 
+scores = np.array([semantic_scores])
+
+fig, ax = plt.subplots(figsize=(8, 2))
+
+heatmap = ax.imshow(scores, cmap="YlGn", aspect="auto")
+ax.set_xticks(np.arange(len(job_titles)))
+ax.set_xticklabels(job_titles, rotation=30, ha="right")
+ax.set_yticks([0])
+ax.set_yticklabels(["Resume"])
+
+for i, score in enumerate(semantic_scores):
+    ax.text(i, 0, f"{score:.0f}", ha="center", va="center", color="black")
+
+plt.colorbar(heatmap, label="Semantic Similarity")
+st.pyplot(fig)
+st.divider()

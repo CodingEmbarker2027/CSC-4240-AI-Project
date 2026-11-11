@@ -1,4 +1,4 @@
-import re
+import ollama
 import AI
 import pdfplumber
 import dictionary as dct
@@ -130,3 +130,16 @@ def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp)
         "matching": list(matching),
         "missing": list(missing)
     }
+
+def generate_analysis(prompt):
+    response = ollama.chat(
+        model="qwen3:1.7b",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    return response["message"]["content"]

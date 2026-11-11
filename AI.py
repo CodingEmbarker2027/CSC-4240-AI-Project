@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from pathlib import Path
 import pandas as pd
 import dictionary as dct
@@ -40,15 +41,32 @@ def experience_years_nlp(text):
     patterns = [
         r'(\d+)\+?\s+years?\s+of\s+experience',
         r'over\s+(\d+)\s+years',
-        r'(\d+)\s+years'
+        r'(\d+)\+?\s+years?\s+experience',
+        r'(\d+)\+?\s+years?\s+experience',
     ]
 
     for pattern in patterns:
-        match = re.search(pattern, text)
+        match = re.search(pattern, text, re.IGNORECASE)
 
         if match:
             return int(match.group(1))
-    return 0
+
+    date_ranges = re.findall(r'(\d{4})\s*[-–]\s*(present|\d{4})', text, re.IGNORECASE)
+
+    total_years = 0
+    current_year = datetime.now().year
+
+    for start, end in date_ranges:
+        start = int(start)
+
+        if end.lower() == "present":
+            end = current_year
+        else:
+            end = int(end)
+
+        total_years += max(0, end - start)
+
+    return total_years
 
 def extract_education_nlp(text):
     text = text.lower()
@@ -156,7 +174,8 @@ def get_ranked_jobs(profile, jobs_df):
             "score": result["final_score"],
             "semantic_score": result["semantic_score"],
             "experience_score": result["experience_score"],
-            "skill_score": result["skill_score"]
+            "skill_score": result["skill_score"],
+            "missing": result["missing"]
         })
 
     ranked_jobs.sort(
@@ -185,7 +204,8 @@ def ai_nlp_match_score(candidate_profile, job, candidate_embedding):
         "semantic_score": semantic_score,
         "experience_score": experience_score,
         "skill_score": skill_score,
-        "final_score": final_score
+        "final_score": final_score,
+        "missing": skill_result["missing"]
     }
 
 def calculate_semantic_score(candidate_embedding, job_embedding):
@@ -258,7 +278,7 @@ def classify_document(text):
         "section_count": section_count,
         "cover_letter_hits": cover_letter_hits,
         "interview_hits": interview_hits,
-        "research_hits": research_hits,
+        "research_hits": research_hits
     }
 
 def main():

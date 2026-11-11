@@ -1,4 +1,5 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 from src import resume
 
 st.title("AI Resume Matcher")
@@ -18,19 +19,69 @@ job_id = st.selectbox(
 
 if st.button("Analyze Match"):
     result = resume.match_candidate_to_job(candidate_id, job_id)
+    score = result["overall_score"]
 
-    st.write(f"Match Score: {result['overall_score']:.2f}%")
+    col1, col2, col3 = st.columns(3)
 
-    if len(result["matching"]) == 0:
-        st.write("Matching Skills: None")
+    with col1:
+        st.metric(
+            "Job Score",
+            f"{score:.2f}"
+        )
+
+    with col2:
+        st.metric(
+            "Matching Skills #",
+            len(result['matching'])
+        )
+
+    with col3:
+        st.metric(
+            "Missing Skills #",
+            len(result['missing'])
+        )
+
+    st.progress(int(score))
+
+    if score >= 85:
+        st.success("🟢 Excellent Match")
+    elif score >= 70:
+        st.info("🔵 Strong Match")
+    elif score >= 55:
+        st.warning("🟡 Moderate Match")
     else:
-        st.write("Matching Skills: ")
-        for matching in result['matching']:
-            st.write(matching.capitalize())
+        st.error("🔴 Weak Match")
 
-        if len(result["missing"]) == 0:
-            st.write("Missing Skills: None")
+    matching = len(result["matching"])
+    missing = len(result["missing"])
+
+    fig, ax = plt.subplots()
+
+    ax.pie(
+        [matching, missing],
+        labels=["Matching", "Missing"],
+        autopct="%1.0f%%",
+        colors=["green", "red"],
+        wedgeprops={"width": 0.4}
+    )
+
+    ax.set_title("Skill Coverage")
+    st.pyplot(fig)
+
+    left, right = st.columns(2)
+
+    with left:
+        st.subheader("✅ Matching Skills")
+        if not result["matching"]:
+            st.write("None")
         else:
-            st.write("Missing Skills: ")
-            for missing in result["missing"]:
-                st.write(missing.capitalize())
+            for skill in result["matching"]:
+                f"- {skill.capitalize()}"
+
+    with right:
+        st.subheader("❌ Missing Skills")
+        if not result["missing"]:
+            st.write("None")
+        else:
+            for skill in result["missing"]:
+                f"- {skill.capitalize()}"
