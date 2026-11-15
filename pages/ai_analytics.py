@@ -5,8 +5,11 @@ from src import resume
 import UI
 import AI
 
+# Upload the potential resume for testing
 uploaded_file = st.file_uploader("Upload Resume", type=["pdf", "docx"], key="r1")
 
+# If the person uploaded their resume, it then checks to see what the filename ends with
+# and extracts the information from the file.
 if uploaded_file is not None:
     file_name = uploaded_file.name
     if file_name.endswith(".docx"):
@@ -16,6 +19,8 @@ if uploaded_file is not None:
 
     result = AI.classify_document(resume_text)
 
+    # If it detects the file as a resume, output the top job along with the
+    # recommended jobs.
     if result["document_type"] == "Resume":
         candidate_profile = UI.build_candidate_function(uploaded_file)
         results = AI.get_ranked_jobs(candidate_profile, resume.jobs_df)
@@ -31,6 +36,9 @@ if uploaded_file is not None:
 
         st.divider()
 
+        # Using Ollama, generate an explanation for why the applicant is a
+        # good match, improvements to be made, and if they are to be interviewed
+        # for the position.
         prompt = f"""
         Resume Skills:
         {candidate_profile['skills']}
@@ -68,26 +76,24 @@ if uploaded_file is not None:
         """
 
         prompt3 = f"""
-        Candidate Skills:
-        {", ".join(candidate_profile['skills'])}
+        You are a hiring manager
         
-        Years of Experience:
-        {candidate_profile['experience']}
-        
-        Education:
-        {", ".join(candidate_profile['education'])}
-        
-        Top Job Match:
+        Role:
         {top_job['title']}
         
-        Create a professional summary of this candidate.
+        Matching Skills:
+        {", ".join(top_job['matching'])}
         
-        Explain:
-        1. Their strongest technical areas
-        2. What type of roles they appear best suited for
-        3. What career path the resume suggests
+        Missing Skills:
+        {", ".join(top_job['missing'])}
         
-        Keep it under 150 words
+        Write a short assessment:
+        - Would you interview this candidate?
+        - What are their strongest qualifications?
+        - What concerns would you have?
+        - What would improve their chances?
+        
+        Limit to 150 words
         """
 
         analysis = UI.generate_analysis(prompt)
@@ -102,9 +108,9 @@ if uploaded_file is not None:
 
         st.divider()
 
-        summary = UI.generate_analysis(prompt3)
-        st.subheader("AI Resume Summary")
-        st.write(summary)
+        hiring = UI.generate_analysis(prompt3)
+        st.subheader("AI Hiring Assistant Manager")
+        st.write(hiring)
 
         st.divider()
 

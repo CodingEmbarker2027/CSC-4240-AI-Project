@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
-from sklearn.metrics import confusion_matrix
 
+# Unless a resume has been uploaded, they cannot
+# access the plots.
 if "job_results" not in st.session_state:
     st.warning("Please upload a resume first")
     st.stop()
@@ -14,6 +15,7 @@ st.header("Resume Results")
 top_job = results[0]
 top_jobs = results[:4]
 
+# Get the job scores for the top job and recommended jobs.
 titles = [job["title"] for job in top_jobs]
 scores = [job["score"] for job in top_jobs]
 
@@ -30,6 +32,8 @@ st.pyplot(plt)
 
 st.divider()
 
+# A radar plot is used to visualize the strengths between the semantic score, skill score,
+# and experience score.
 st.header("Radar Plot Customizer")
 
 selected_title = st.selectbox("Analyze Job", [job["title"] for job in results[:4]])
@@ -80,6 +84,7 @@ ax.set_xticklabels(categories)
 plt.title("Best Job Match Breakdown")
 st.pyplot(figure)
 
+# Determine which one needs the most area of improvement
 weakest = min(
     [
         ("Skills", top_job["skill_score"]),
@@ -109,6 +114,7 @@ elif weakest[0] == "Experience":
 
 st.divider()
 
+# How well does the resume align with the job the applicant is applying for?
 st.header("Semantic Similarity Heatmap")
 semantic_scores = [job["semantic_score"] for job in results[:10]]
 job_titles = [job["title"] for job in results[:10]]

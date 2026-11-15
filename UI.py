@@ -5,6 +5,7 @@ import dictionary as dct
 from docx import Document
 from src import resume
 
+# Extracts text from a PDF file
 def extract_pdf_text(file):
     text = ""
 
@@ -17,6 +18,7 @@ def extract_pdf_text(file):
 
     return text
 
+# Extracts text from a DOCX or Word file
 def extract_docx_text(file):
     doc = Document(file)
 
@@ -35,27 +37,7 @@ def extract_docx_text(file):
     final_text = "\n".join(text_parts)
     return final_text
 
-def extract_sections(paragraphs):
-    sections = {}
-
-    current_section = None
-
-    for line in paragraphs:
-        line_lower = line.lower()
-
-        found_section = None
-
-        for section_name, patterns in dct.section_patterns.items():
-            if line_lower in patterns:
-                found_section = section_name
-                break
-        if found_section:
-            current_section = found_section
-            sections[current_section] = []
-        elif current_section:
-            sections[current_section].append(line.strip())
-    return sections
-
+# After uploading a resume, retrieve the information that is on the file.
 def build_candidate_function(file_path):
     file_name = file_path.name
 
@@ -71,6 +53,7 @@ def build_candidate_function(file_path):
         "candidate_text": resume_text
     }
 
+# For the uploaded resume, find the best jobs based on the details.
 def match_uploaded_resume_to_jobs(candidate_profile):
     results = []
 
@@ -98,6 +81,8 @@ def match_uploaded_resume_to_jobs(candidate_profile):
 
     return results
 
+# Gathers the missing skills, matching skills, and score based on the amount of skills
+# the applicant has.
 def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp):
     if isinstance(job_skills, str):
         job_skills = [
@@ -131,6 +116,8 @@ def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp)
         "missing": list(missing)
     }
 
+# Used for the Ollama model to generate prompts about improvements, skills needed, and
+# whether the applicant is worth an interview.
 def generate_analysis(prompt):
     response = ollama.chat(
         model="qwen3:1.7b",

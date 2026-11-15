@@ -8,21 +8,26 @@ from sklearn.metrics.pairwise import cosine_similarity
 import streamlit as st
 from src import resume
 
+# Reduces the amount of resources used in Streamlit when loading the page
 @st.cache_resource
 def load_model():
     return SentenceTransformer("all-MiniLM-L6-v2")
 model = load_model()
 
+# Loads in the gpt_df to compare it with other resumes
 gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
 
+# For later on when checking to see whether a .docx/.pdf file is a resume
 resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True)
 interview_embeddings = model.encode(dct.INTERVIEW_EXAMPLES, convert_to_tensor=True)
 cover_letter_embeddings = model.encode(dct.COVER_LETTER_EXAMPLES, convert_to_tensor=True)
 research_embeddings = model.encode(dct.RESEARCH_EXAMPLES, convert_to_tensor=True)
 
+# Embed the text
 def generate_embedding(text):
     return model.encode(text, convert_to_tensor=True)
 
+# Using a dictionary of skills, find the skills in the resume
 def extract_skills_nlp(text):
     text = text.lower()
 
@@ -35,6 +40,7 @@ def extract_skills_nlp(text):
             found_skills.add(skill)
     return sorted(found_skills)
 
+# Extract the experience based on certain patterns using regex
 def experience_years_nlp(text):
     text = text.lower()
 
@@ -68,6 +74,7 @@ def experience_years_nlp(text):
 
     return total_years
 
+# Extract the education based on a certain pattern using regex
 def extract_education_nlp(text):
     text = text.lower()
 
@@ -80,19 +87,7 @@ def extract_education_nlp(text):
             found.add(keyword)
     return sorted(found)
 
-def extract_degree_level(text):
-    text = text.lower()
-
-    if "phd" in text or "doctorate" in text:
-        return "phD"
-    elif "master" in text:
-        return "Master"
-    elif "bachelor" in text or "b.s." in text or "bs" in text:
-        return "Bachelor"
-    elif "associate" in text:
-        return "Associate"
-    return "Unknown"
-
+# Create a profile of the candidate using the 3 previous funcion
 def build_candidate_profile_nlp(resume_text):
     return {
         "skills": extract_skills_nlp(resume_text),
@@ -100,6 +95,7 @@ def build_candidate_profile_nlp(resume_text):
         "education": extract_education_nlp(resume_text)
     }
 
+# Used as a baseline for the AI/NLP portion of this project
 def build_candidate_text(candidate):
     return f"""
     Name: {candidate['name']}
@@ -121,6 +117,7 @@ def build_job_text(job):
     Experience: {job['experience_required']} years
     """
 
+# With the two previous functions, compute a semantic score based on the candidate and job.
 def ai_match_score(candidate, job):
     candidate_text = build_candidate_text(candidate)
     job_text = build_job_text(job)
@@ -132,6 +129,7 @@ def ai_match_score(candidate, job):
 
     return similarity[0][0] * 100
 
+# A final calculation of the actual job score based on certain criteria
 def calculate_final_score(semantic_score, experience_score, skill_score):
     return (
         semantic_score * 0.6 +
@@ -139,6 +137,7 @@ def calculate_final_score(semantic_score, experience_score, skill_score):
         experience_score * 0.1
     )
 
+# Gets a score based on the skills the person has and is missing.
 def calculate_skill_score(candidate_profile, job):
     candidate_set = {
         skill.lower()
@@ -161,6 +160,7 @@ def calculate_skill_score(candidate_profile, job):
         "missing": list(missing)
     }
 
+# Ranks the top jobs for the applicant based on their job score.
 def get_ranked_jobs(profile, jobs_df):
     ranked_jobs = []
 
@@ -175,7 +175,8 @@ def get_ranked_jobs(profile, jobs_df):
             "semantic_score": result["semantic_score"],
             "experience_score": result["experience_score"],
             "skill_score": result["skill_score"],
-            "missing": result["missing"]
+            "missing": result["missing"],
+            "matching": result["matching"]
         })
 
     ranked_jobs.sort(
@@ -185,6 +186,7 @@ def get_ranked_jobs(profile, jobs_df):
 
     return ranked_jobs
 
+# Generates the match score using AI tools that will be used for the rankings.
 def ai_nlp_match_score(candidate_profile, job, candidate_embedding):
     job_embedding = generate_embedding(build_job_text(job))
 
@@ -205,30 +207,18 @@ def ai_nlp_match_score(candidate_profile, job, candidate_embedding):
         "experience_score": experience_score,
         "skill_score": skill_score,
         "final_score": final_score,
-        "missing": skill_result["missing"]
+        "missing": skill_result["missing"],
+        "matching": skill_result["matching"]
     }
 
+# Calculates the similarities in the way the skills align with the candidate and job
 def calculate_semantic_score(candidate_embedding, job_embedding):
     similarity = util.cos_sim(candidate_embedding, job_embedding)
 
     return similarity.item() * 100
 
-def predict_job_category(profile, jobs_df):
-    best_job = None
-    best_score = -1
-
-    for _, job in jobs_df.iterrows():
-        result = ai_nlp_match_score(profile, job)
-
-        if result["final_score"] > best_score:
-            best_score = result["final_score"]
-            best_job = job["title"]
-
-    return {
-        "predicted_job": best_job,
-        "score": best_score
-    }
-
+# Based on certain criteria, classify whether the file is a resume or if it is
+# another file similarly used for jobs that is not a resume.
 def classify_document(text):
     uploaded_embedding = model.encode(text, convert_to_tensor=True)
     scores = {}

@@ -1,9 +1,10 @@
 import pandas as pd
-from pathlib import Path
 
+# Pull in the datasets from local file paths
 jobs_df = pd.read_csv("data/job_list.csv")
 resumes_df = pd.read_csv("data/resume_list.csv")
 
+# Make all strings lowercase for easier comparisons
 def clean_skills(skill_string):
     if isinstance(skill_string, list):
         return {
@@ -16,12 +17,14 @@ def clean_skills(skill_string):
         for skill in skill_string.split(",")
     }
 
+# Based on the number of years a candidate has, output their experience score
 def calculate_experience_score(candidate_exp, required_exp):
     if candidate_exp >= required_exp:
         return 100
 
     return (candidate_exp / required_exp) * 100
 
+# Get their overall match score along with the skills they have and are lacking for a certain job
 def keyword_match(resume_skills, job_skills, candidate_exp, required_exp):
     resume_set = clean_skills(resume_skills)
     job_set = clean_skills(job_skills)
@@ -43,10 +46,7 @@ def keyword_match(resume_skills, job_skills, candidate_exp, required_exp):
         "missing": list(missing)
     }
 
-def get_candidate(candidate_id):
-    candidate = resumes_df[resumes_df["candidate_id"] == candidate_id]
-    return candidate.iloc[0]
-
+# How well does the candidate match up with the specific job?
 def match_candidate_to_job(candidate_id, job_id):
     candidate = resumes_df[resumes_df["candidate_id"] == candidate_id].iloc[0]
     job = jobs_df[jobs_df["job_id"] == job_id].iloc[0]
@@ -58,14 +58,7 @@ def match_candidate_to_job(candidate_id, job_id):
         job["experience_required"]
     )
 
-def generate_suggestions(missing_skills):
-    suggestions = []
-
-    for skill in missing_skills:
-        suggestions.append(f"Consider learning {skill}")
-
-    return suggestions
-
+# From the previous function, find the best job for the applicant
 def find_best_jobs(candidate_id):
     results = []
 

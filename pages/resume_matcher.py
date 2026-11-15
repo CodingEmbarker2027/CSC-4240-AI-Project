@@ -4,12 +4,17 @@ from src import resume
 
 st.title("AI Resume Matcher")
 
+# For the baseline resume matcher, extract the name of the applicant based on their
+# candidate_id.
 candidate_name_map = dict(zip(resume.resumes_df["candidate_id"], resume.resumes_df["name"]))
 candidate_id = st.selectbox(
     "Select Candidate",
     resume.resumes_df["candidate_id"],
     format_func=lambda selected_candidate_id: candidate_name_map[selected_candidate_id],
 )
+
+# For the baseline resume matcher, extract the name of the job based on the
+# job_id.
 job_title_map = dict(zip(resume.jobs_df["job_id"], resume.jobs_df["title"]))
 job_id = st.selectbox(
     "Select Job",
@@ -17,6 +22,7 @@ job_id = st.selectbox(
     format_func=lambda selected_job_id: f"{selected_job_id} - {job_title_map.get(selected_job_id, 'Unknown')}"
 )
 
+# If the button is pressed, display all the information about the applicant's resume.
 if st.button("Analyze Match"):
     result = resume.match_candidate_to_job(candidate_id, job_id)
     score = result["overall_score"]
@@ -68,20 +74,21 @@ if st.button("Analyze Match"):
     ax.set_title("Skill Coverage")
     st.pyplot(fig)
 
-    left, right = st.columns(2)
+    with st.expander("Viewed Detail Skill Analysis"):
+        left, right = st.columns(2)
 
-    with left:
-        st.subheader("✅ Matching Skills")
-        if not result["matching"]:
-            st.write("None")
-        else:
-            for skill in result["matching"]:
-                f"- {skill.capitalize()}"
+        with left:
+            st.subheader("✅ Matching Skills")
+            if not result["matching"]:
+                st.write("None")
+            else:
+                for skill in result["matching"]:
+                    st.write(f"- {skill.capitalize()}")
 
-    with right:
-        st.subheader("❌ Missing Skills")
-        if not result["missing"]:
-            st.write("None")
-        else:
-            for skill in result["missing"]:
-                f"- {skill.capitalize()}"
+        with right:
+            st.subheader("❌ Missing Skills")
+            if not result["missing"]:
+                st.write("None")
+            else:
+                for skill in result["missing"]:
+                    st.write(f"- {skill.capitalize()}")
