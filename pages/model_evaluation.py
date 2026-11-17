@@ -84,28 +84,30 @@ ax.set_xticklabels(categories)
 plt.title("Best Job Match Breakdown")
 st.pyplot(figure)
 
-# Determine which one needs the most area of improvement
-weakest = min(
-    [
-        ("Skills", top_job["skill_score"]),
-        ("Semantic", top_job["semantic_score"]),
-        ("Experience", top_job["experience_score"])
-    ],
-    key=lambda x: x[1]
-)
+scores = {
+    "Skills": top_job["skill_score"],
+    "Semantic": top_job["semantic_score"],
+    "Experience": top_job["experience_score"]
+}
 
-if weakest[0] == "Semantic":
+strongest = max(scores, key=scores.get)
+weakest = min(scores, key=scores.get)
+
+st.success(f"Strongest Area: {strongest}")
+
+# Determine which one needs the most area of improvement
+if weakest == "Semantic":
     st.warning("""
     The candidate has many required qualifications, but
     the overall resume narrative does not strongly align
     with this career path.
     """)
-elif weakest[0] == "Skills":
+elif weakest == "Skills":
     st.warning("""
     The candidate appears to be a good fit for this role, but
     there are notable gaps in the required technical skill set.
     """)
-elif weakest[0] == "Experience":
+elif weakest == "Experience":
     st.warning("""
     The candidate possesses many of the necessary skills
     for this role, but may need additional professional
