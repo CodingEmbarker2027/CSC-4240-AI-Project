@@ -1,6 +1,5 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import ollama
 from src import resume
 import UI
 import AI
@@ -59,6 +58,15 @@ if uploaded_file is not None:
         {top_job['experience_score']}
         
         Explain in 3-5 sentences why this job is a good match.
+        
+        Consider:
+            - Existing skills
+            - Experience
+            - Semantic alignment
+            - Potential for growth
+            - Ability to learn missing skills
+
+        Do not focus only on missing qualifications.
         """
 
         prompt2 = f"""
