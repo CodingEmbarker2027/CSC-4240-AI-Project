@@ -8,3 +8,7 @@ pdfplumber
 scikit-learn
 matplotlib
 seaborn
+ollama
+psutil
+requests
+beautifulsoup4

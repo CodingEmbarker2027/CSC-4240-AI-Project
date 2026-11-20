@@ -1,0 +1,326 @@
+candidate_id,vacancy_number,vacancy_id,job_title,semantic_score,ai_rank
+1,4,207,Backend Software Developer,0.58504539,1
+1,3,90,Junior Level Software Developer (1-4 years experience),0.53218582,2
+1,5,499,Software Developer,0.51798203,3
+1,2,37,Remote Software Developer,0.51284057,4
+1,1,8,Software Developer - .Net,0.45546076,5
+2,4,207,Backend Software Developer,0.52316251,1
+2,3,90,Junior Level Software Developer (1-4 years experience),0.47670360,2
+2,5,499,Software Developer,0.46842138,3
+2,2,37,Remote Software Developer,0.45684433,4
+2,1,8,Software Developer - .Net,0.38645061,5
+3,4,207,Backend Software Developer,0.55096681,1
+3,3,90,Junior Level Software Developer (1-4 years experience),0.45456568,2
+3,2,37,Remote Software Developer,0.44756674,3
+3,1,8,Software Developer - .Net,0.41994368,4
+3,5,499,Software Developer,0.41543692,5
+4,4,207,Backend Software Developer,0.64796662,1
+4,2,37,Remote Software Developer,0.54338424,2
+4,3,90,Junior Level Software Developer (1-4 years experience),0.52144089,3
+4,5,499,Software Developer,0.47330596,4
+4,1,8,Software Developer - .Net,0.44122584,5
+5,4,207,Backend Software Developer,0.57985139,1
+5,3,90,Junior Level Software Developer (1-4 years experience),0.47056288,2
+5,2,37,Remote Software Developer,0.40624555,3
+5,5,499,Software Developer,0.38351994,4
+5,1,8,Software Developer - .Net,0.36009882,5
+6,4,207,Backend Software Developer,0.57201404,1
+6,3,90,Junior Level Software Developer (1-4 years experience),0.49613738,2
+6,2,37,Remote Software Developer,0.45327214,3
+6,5,499,Software Developer,0.41779695,4
+6,1,8,Software Developer - .Net,0.38996138,5
+7,4,207,Backend Software Developer,0.58086173,1
+7,2,37,Remote Software Developer,0.53070100,2
+7,3,90,Junior Level Software Developer (1-4 years experience),0.53028111,3
+7,1,8,Software Developer - .Net,0.44971183,4
+7,5,499,Software Developer,0.42215313,5
+8,3,90,Junior Level Software Developer (1-4 years experience),0.39803942,1
+8,4,207,Backend Software Developer,0.38615044,2
+8,2,37,Remote Software Developer,0.35695862,3
+8,5,499,Software Developer,0.33702039,4
+8,1,8,Software Developer - .Net,0.33118547,5
+9,4,207,Backend Software Developer,0.59385791,1
+9,3,90,Junior Level Software Developer (1-4 years experience),0.57192027,2
+9,2,37,Remote Software Developer,0.53151692,3
+9,1,8,Software Developer - .Net,0.48313404,4
+9,5,499,Software Developer,0.41556610,5
+10,4,207,Backend Software Developer,0.54482761,1
+10,3,90,Junior Level Software Developer (1-4 years experience),0.46008353,2
+10,2,37,Remote Software Developer,0.41637384,3
+10,5,499,Software Developer,0.39631912,4
+10,1,8,Software Developer - .Net,0.33984611,5
+11,3,90,Junior Level Software Developer (1-4 years experience),0.61209852,1
+11,2,37,Remote Software Developer,0.51641191,2
+11,4,207,Backend Software Developer,0.46327564,3
+11,5,499,Software Developer,0.45774626,4
+11,1,8,Software Developer - .Net,0.43572689,5
+12,4,207,Backend Software Developer,0.58762284,1
+12,3,90,Junior Level Software Developer (1-4 years experience),0.55778483,2
+12,1,8,Software Developer - .Net,0.51382856,3
+12,2,37,Remote Software Developer,0.50916205,4
+12,5,499,Software Developer,0.42582462,5
+13,4,207,Backend Software Developer,0.54304728,1
+13,3,90,Junior Level Software Developer (1-4 years experience),0.49999343,2
+13,2,37,Remote Software Developer,0.42831239,3
+13,5,499,Software Developer,0.40378446,4
+13,1,8,Software Developer - .Net,0.38459026,5
+14,4,207,Backend Software Developer,0.71625659,1
+14,3,90,Junior Level Software Developer (1-4 years experience),0.64506844,2
+14,2,37,Remote Software Developer,0.63986483,3
+14,1,8,Software Developer - .Net,0.61246266,4
+14,5,499,Software Developer,0.58593134,5
+15,4,207,Backend Software Developer,0.62307616,1
+15,3,90,Junior Level Software Developer (1-4 years experience),0.53735641,2
+15,2,37,Remote Software Developer,0.48500316,3
+15,1,8,Software Developer - .Net,0.45013694,4
+15,5,499,Software Developer,0.43233965,5
+16,3,90,Junior Level Software Developer (1-4 years experience),0.61196011,1
+16,4,207,Backend Software Developer,0.58546219,2
+16,2,37,Remote Software Developer,0.53814686,3
+16,5,499,Software Developer,0.51480068,4
+16,1,8,Software Developer - .Net,0.45087088,5
+17,4,207,Backend Software Developer,0.61807206,1
+17,3,90,Junior Level Software Developer (1-4 years experience),0.54431736,2
+17,2,37,Remote Software Developer,0.43216974,3
+17,1,8,Software Developer - .Net,0.38038159,4
+17,5,499,Software Developer,0.35531747,5
+18,4,207,Backend Software Developer,0.49988934,1
+18,2,37,Remote Software Developer,0.44627612,2
+18,3,90,Junior Level Software Developer (1-4 years experience),0.39699459,3
+18,1,8,Software Developer - .Net,0.39162534,4
+18,5,499,Software Developer,0.33714631,5
+19,4,207,Backend Software Developer,0.57016803,1
+19,3,90,Junior Level Software Developer (1-4 years experience),0.48143043,2
+19,2,37,Remote Software Developer,0.47433020,3
+19,5,499,Software Developer,0.43705763,4
+19,1,8,Software Developer - .Net,0.43173651,5
+20,4,207,Backend Software Developer,0.65044740,1
+20,3,90,Junior Level Software Developer (1-4 years experience),0.58546531,2
+20,2,37,Remote Software Developer,0.52196045,3
+20,5,499,Software Developer,0.48900533,4
+20,1,8,Software Developer - .Net,0.45208330,5
+21,4,207,Backend Software Developer,0.49304405,1
+21,3,90,Junior Level Software Developer (1-4 years experience),0.48843322,2
+21,1,8,Software Developer - .Net,0.45049579,3
+21,5,499,Software Developer,0.43393016,4
+21,2,37,Remote Software Developer,0.42964406,5
+22,3,90,Junior Level Software Developer (1-4 years experience),0.51434659,1
+22,4,207,Backend Software Developer,0.46849958,2
+22,2,37,Remote Software Developer,0.43315838,3
+22,5,499,Software Developer,0.40334968,4
+22,1,8,Software Developer - .Net,0.37243069,5
+23,2,37,Remote Software Developer,0.60969672,1
+23,4,207,Backend Software Developer,0.60184468,2
+23,3,90,Junior Level Software Developer (1-4 years experience),0.59869435,3
+23,5,499,Software Developer,0.49258300,4
+23,1,8,Software Developer - .Net,0.45094298,5
+24,4,207,Backend Software Developer,0.53707310,1
+24,3,90,Junior Level Software Developer (1-4 years experience),0.44114036,2
+24,2,37,Remote Software Developer,0.42078233,3
+24,5,499,Software Developer,0.40083367,4
+24,1,8,Software Developer - .Net,0.35185341,5
+25,4,207,Backend Software Developer,0.66054581,1
+25,3,90,Junior Level Software Developer (1-4 years experience),0.64319220,2
+25,1,8,Software Developer - .Net,0.63609440,3
+25,2,37,Remote Software Developer,0.59050714,4
+25,5,499,Software Developer,0.57522396,5
+26,4,207,Backend Software Developer,0.61612621,1
+26,3,90,Junior Level Software Developer (1-4 years experience),0.53130916,2
+26,2,37,Remote Software Developer,0.52237357,3
+26,1,8,Software Developer - .Net,0.39039356,4
+26,5,499,Software Developer,0.36631347,5
+27,4,207,Backend Software Developer,0.54500555,1
+27,3,90,Junior Level Software Developer (1-4 years experience),0.50389200,2
+27,5,499,Software Developer,0.43855771,3
+27,2,37,Remote Software Developer,0.43077867,4
+27,1,8,Software Developer - .Net,0.37644519,5
+28,4,207,Backend Software Developer,0.66469359,1
+28,3,90,Junior Level Software Developer (1-4 years experience),0.55865921,2
+28,2,37,Remote Software Developer,0.54414284,3
+28,5,499,Software Developer,0.47869316,4
+28,1,8,Software Developer - .Net,0.44385022,5
+29,4,207,Backend Software Developer,0.60068577,1
+29,3,90,Junior Level Software Developer (1-4 years experience),0.54716247,2
+29,2,37,Remote Software Developer,0.52769803,3
+29,5,499,Software Developer,0.49242670,4
+29,1,8,Software Developer - .Net,0.40927705,5
+30,4,207,Backend Software Developer,0.56821243,1
+30,3,90,Junior Level Software Developer (1-4 years experience),0.54660195,2
+30,5,499,Software Developer,0.45552585,3
+30,2,37,Remote Software Developer,0.45224644,4
+30,1,8,Software Developer - .Net,0.39954137,5
+31,4,207,Backend Software Developer,0.59495220,1
+31,3,90,Junior Level Software Developer (1-4 years experience),0.53529380,2
+31,2,37,Remote Software Developer,0.52980715,3
+31,5,499,Software Developer,0.46070947,4
+31,1,8,Software Developer - .Net,0.42529825,5
+32,3,90,Junior Level Software Developer (1-4 years experience),0.49924783,1
+32,4,207,Backend Software Developer,0.47597008,2
+32,1,8,Software Developer - .Net,0.41153582,3
+32,2,37,Remote Software Developer,0.35929992,4
+32,5,499,Software Developer,0.32554359,5
+33,4,207,Backend Software Developer,0.60890708,1
+33,3,90,Junior Level Software Developer (1-4 years experience),0.59636065,2
+33,2,37,Remote Software Developer,0.47586364,3
+33,1,8,Software Developer - .Net,0.35841581,4
+33,5,499,Software Developer,0.35473007,5
+34,4,207,Backend Software Developer,0.64834488,1
+34,2,37,Remote Software Developer,0.57048934,2
+34,3,90,Junior Level Software Developer (1-4 years experience),0.55495224,3
+34,5,499,Software Developer,0.48038012,4
+34,1,8,Software Developer - .Net,0.41015621,5
+35,4,207,Backend Software Developer,0.49930453,1
+35,3,90,Junior Level Software Developer (1-4 years experience),0.42904847,2
+35,2,37,Remote Software Developer,0.38951651,3
+35,5,499,Software Developer,0.38877800,4
+35,1,8,Software Developer - .Net,0.37508245,5
+36,4,207,Backend Software Developer,0.39822124,1
+36,3,90,Junior Level Software Developer (1-4 years experience),0.39618197,2
+36,2,37,Remote Software Developer,0.35291215,3
+36,1,8,Software Developer - .Net,0.34229078,4
+36,5,499,Software Developer,0.33241346,5
+37,4,207,Backend Software Developer,0.56680815,1
+37,3,90,Junior Level Software Developer (1-4 years experience),0.54830909,2
+37,5,499,Software Developer,0.46650377,3
+37,2,37,Remote Software Developer,0.45207895,4
+37,1,8,Software Developer - .Net,0.40640342,5
+38,3,90,Junior Level Software Developer (1-4 years experience),0.58762312,1
+38,1,8,Software Developer - .Net,0.56898144,2
+38,4,207,Backend Software Developer,0.56617827,3
+38,2,37,Remote Software Developer,0.52063482,4
+38,5,499,Software Developer,0.44549433,5
+39,4,207,Backend Software Developer,0.61047194,1
+39,3,90,Junior Level Software Developer (1-4 years experience),0.59990172,2
+39,2,37,Remote Software Developer,0.53734332,3
+39,1,8,Software Developer - .Net,0.47527783,4
+39,5,499,Software Developer,0.42739855,5
+40,3,90,Junior Level Software Developer (1-4 years experience),0.61627121,1
+40,4,207,Backend Software Developer,0.57915956,2
+40,2,37,Remote Software Developer,0.50429253,3
+40,1,8,Software Developer - .Net,0.47854833,4
+40,5,499,Software Developer,0.46990016,5
+41,4,207,Backend Software Developer,0.63035558,1
+41,3,90,Junior Level Software Developer (1-4 years experience),0.58428765,2
+41,2,37,Remote Software Developer,0.49643688,3
+41,5,499,Software Developer,0.46197892,4
+41,1,8,Software Developer - .Net,0.44814865,5
+42,3,90,Junior Level Software Developer (1-4 years experience),0.53006628,1
+42,4,207,Backend Software Developer,0.50487486,2
+42,2,37,Remote Software Developer,0.44384489,3
+42,5,499,Software Developer,0.36315246,4
+42,1,8,Software Developer - .Net,0.31652011,5
+43,4,207,Backend Software Developer,0.63091221,1
+43,2,37,Remote Software Developer,0.52149804,2
+43,3,90,Junior Level Software Developer (1-4 years experience),0.52090347,3
+43,5,499,Software Developer,0.41897570,4
+43,1,8,Software Developer - .Net,0.31553251,5
+44,4,207,Backend Software Developer,0.47421126,1
+44,2,37,Remote Software Developer,0.43743706,2
+44,3,90,Junior Level Software Developer (1-4 years experience),0.41542487,3
+44,5,499,Software Developer,0.33675017,4
+44,1,8,Software Developer - .Net,0.28999547,5
+45,4,207,Backend Software Developer,0.60244450,1
+45,3,90,Junior Level Software Developer (1-4 years experience),0.56900309,2
+45,2,37,Remote Software Developer,0.53373346,3
+45,5,499,Software Developer,0.38947410,4
+45,1,8,Software Developer - .Net,0.32472547,5
+46,3,90,Junior Level Software Developer (1-4 years experience),0.48302350,1
+46,4,207,Backend Software Developer,0.46765744,2
+46,1,8,Software Developer - .Net,0.42425228,3
+46,5,499,Software Developer,0.40720397,4
+46,2,37,Remote Software Developer,0.36943008,5
+47,3,90,Junior Level Software Developer (1-4 years experience),0.50346735,1
+47,4,207,Backend Software Developer,0.49907790,2
+47,2,37,Remote Software Developer,0.47365403,3
+47,1,8,Software Developer - .Net,0.47288492,4
+47,5,499,Software Developer,0.38524334,5
+48,3,90,Junior Level Software Developer (1-4 years experience),0.53608531,1
+48,4,207,Backend Software Developer,0.51631853,2
+48,1,8,Software Developer - .Net,0.48077510,3
+48,2,37,Remote Software Developer,0.39068219,4
+48,5,499,Software Developer,0.29353778,5
+49,4,207,Backend Software Developer,0.61911107,1
+49,3,90,Junior Level Software Developer (1-4 years experience),0.59289122,2
+49,2,37,Remote Software Developer,0.56740121,3
+49,5,499,Software Developer,0.47025580,4
+49,1,8,Software Developer - .Net,0.45626434,5
+50,3,90,Junior Level Software Developer (1-4 years experience),0.56132315,1
+50,4,207,Backend Software Developer,0.51085083,2
+50,2,37,Remote Software Developer,0.50938648,3
+50,1,8,Software Developer - .Net,0.47921181,4
+50,5,499,Software Developer,0.42065049,5
+51,3,90,Junior Level Software Developer (1-4 years experience),0.62200729,1
+51,4,207,Backend Software Developer,0.58487720,2
+51,5,499,Software Developer,0.56097581,3
+51,2,37,Remote Software Developer,0.51450957,4
+51,1,8,Software Developer - .Net,0.47996969,5
+52,4,207,Backend Software Developer,0.63803703,1
+52,1,8,Software Developer - .Net,0.57913854,2
+52,2,37,Remote Software Developer,0.57153499,3
+52,3,90,Junior Level Software Developer (1-4 years experience),0.56571847,4
+52,5,499,Software Developer,0.49193597,5
+53,3,90,Junior Level Software Developer (1-4 years experience),0.62668196,1
+53,4,207,Backend Software Developer,0.58345334,2
+53,5,499,Software Developer,0.56204604,3
+53,2,37,Remote Software Developer,0.51622955,4
+53,1,8,Software Developer - .Net,0.48288749,5
+54,4,207,Backend Software Developer,0.53125512,1
+54,3,90,Junior Level Software Developer (1-4 years experience),0.48921809,2
+54,2,37,Remote Software Developer,0.48847426,3
+54,5,499,Software Developer,0.42462536,4
+54,1,8,Software Developer - .Net,0.38045518,5
+55,4,207,Backend Software Developer,0.52923328,1
+55,3,90,Junior Level Software Developer (1-4 years experience),0.45533426,2
+55,2,37,Remote Software Developer,0.34530218,3
+55,1,8,Software Developer - .Net,0.34317648,4
+55,5,499,Software Developer,0.34198260,5
+56,4,207,Backend Software Developer,0.38396513,1
+56,1,8,Software Developer - .Net,0.36546490,2
+56,3,90,Junior Level Software Developer (1-4 years experience),0.34368622,3
+56,2,37,Remote Software Developer,0.30403419,4
+56,5,499,Software Developer,0.26198545,5
+57,4,207,Backend Software Developer,0.47183753,1
+57,3,90,Junior Level Software Developer (1-4 years experience),0.44272228,2
+57,2,37,Remote Software Developer,0.42983870,3
+57,5,499,Software Developer,0.32731794,4
+57,1,8,Software Developer - .Net,0.30621769,5
+58,4,207,Backend Software Developer,0.58931930,1
+58,2,37,Remote Software Developer,0.55589987,2
+58,3,90,Junior Level Software Developer (1-4 years experience),0.51812474,3
+58,5,499,Software Developer,0.51251687,4
+58,1,8,Software Developer - .Net,0.49136664,5
+59,3,90,Junior Level Software Developer (1-4 years experience),0.67382177,1
+59,4,207,Backend Software Developer,0.53564852,2
+59,5,499,Software Developer,0.47395997,3
+59,2,37,Remote Software Developer,0.45191646,4
+59,1,8,Software Developer - .Net,0.34181116,5
+60,4,207,Backend Software Developer,0.53668948,1
+60,3,90,Junior Level Software Developer (1-4 years experience),0.49159598,2
+60,2,37,Remote Software Developer,0.43996014,3
+60,5,499,Software Developer,0.40028461,4
+60,1,8,Software Developer - .Net,0.35030143,5
+61,4,207,Backend Software Developer,0.56443290,1
+61,3,90,Junior Level Software Developer (1-4 years experience),0.56128277,2
+61,2,37,Remote Software Developer,0.51717580,3
+61,5,499,Software Developer,0.46700635,4
+61,1,8,Software Developer - .Net,0.42831068,5
+62,3,90,Junior Level Software Developer (1-4 years experience),0.40984135,1
+62,5,499,Software Developer,0.27378910,2
+62,4,207,Backend Software Developer,0.26072718,3
+62,2,37,Remote Software Developer,0.22189001,4
+62,1,8,Software Developer - .Net,0.21235460,5
+63,4,207,Backend Software Developer,0.50938376,1
+63,3,90,Junior Level Software Developer (1-4 years experience),0.49555578,2
+63,2,37,Remote Software Developer,0.38155190,3
+63,1,8,Software Developer - .Net,0.35381281,4
+63,5,499,Software Developer,0.31809755,5
+64,4,207,Backend Software Developer,0.55566762,1
+64,3,90,Junior Level Software Developer (1-4 years experience),0.47259900,2
+64,2,37,Remote Software Developer,0.41514500,3
+64,5,499,Software Developer,0.35373690,4
+64,1,8,Software Developer - .Net,0.34721711,5
+65,2,37,Remote Software Developer,0.56096896,1
+65,4,207,Backend Software Developer,0.55953050,2
+65,3,90,Junior Level Software Developer (1-4 years experience),0.52367035,3
+65,5,499,Software Developer,0.50809391,4
+65,1,8,Software Developer - .Net,0.45933855,5
