@@ -57,6 +57,10 @@ def experience_years_nlp(text):
         if match:
             return int(match.group(1))
 
+    section_match = re.search(r'experience[:\s\n]+(\d+)', text, re.IGNORECASE)
+    if section_match:
+        return int(section_match.group(1))
+
     date_ranges = re.findall(r'(\d{4})\s*[-–]\s*(present|\d{4})', text, re.IGNORECASE)
 
     total_years = 0
@@ -242,13 +246,33 @@ def classify_document(text):
         scores["Resume"] += 0.40
     elif section_count >= 2:
         scores["Resume"] += 0.20
+
     if email_found:
         scores["Resume"] += 0.10
     if phone_found:
         scores["Resume"] += 0.10
 
+    if "dear" in text.lower():
+        scores["Resume"] -= 0.15
+
+    if "warm regards" in text.lower():
+        scores["Resume"] -= 0.20
+
     if cover_letter_hits >= 2:
         scores["Cover Letter"] += 0.30
+    if "dear" in text.lower():
+        scores["Cover Letter"] += 0.20
+    if "warm regards" in text.lower():
+        scores["Cover Letter"] += 0.30
+    if "thank you" in text.lower():
+        scores["Cover Letter"] += 0.20
+    if "to whom it may concern" in text.lower():
+        scores["Cover Letter"] += 0.40
+    if "sincerely" in text.lower():
+        scores["Cover Letter"] += 0.25
+    if "i am writing" in text.lower():
+        scores["Cover Letter"] += 0.20
+
     if interview_hits >= 2:
         scores["Interview Notes"] += 0.40
     if research_hits >= 2:

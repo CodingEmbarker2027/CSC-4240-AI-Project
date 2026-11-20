@@ -158,7 +158,8 @@ cover_letter_phrases = {
     "dear recruiter",
     "warm regards",
     "please accept",
-    "look forward to hearing"
+    "look forward to hearing",
+    "to whom it may concern"
 }
 
 resume_sections = {
