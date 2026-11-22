@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 
 def fetch_demo_jobs(company_slug="discord", keyword="engineer", limit=5):
-    url = f"https://greenhouse.io{company_slug}/jobs?content=true"
+    url = f"https://boards-api.greenhouse.io/v1/boards/{company_slug}/jobs?content=true"
 
     response = requests.get(url, timeout=10)
     response.raise_for_status()
