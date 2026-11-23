@@ -6,12 +6,12 @@ import dictionary as dct
 from sentence_transformers import SentenceTransformer, util
 from sklearn.metrics.pairwise import cosine_similarity
 import streamlit as st
-from src import resume
+from src import resume, semantic_matcher
 
 # Reduces the amount of resources used in Streamlit when loading the page
 @st.cache_resource
 def load_model():
-    return SentenceTransformer("all-MiniLM-L6-v2")
+    return semantic_matcher.get_model()
 model = load_model()
 
 # Loads in the gpt_df to compare it with other resumes
@@ -115,6 +115,20 @@ def build_nlp_candidate(profile):
     """
 
 def build_job_text(job):
+    # Prefer full job description when one exists.
+    if "job_description" in job.index:
+        description = job["job_description"]
+
+        if pd.notna(description) and str(description).strip():
+            return str(description)
+
+    # Support other common description-column names.
+    for column in ["job_descritpion","description", "job_desc"]:
+        if column in job.index:
+            description = job[column]
+
+            if pd.notna(description) and str(description).strip():
+                return str(description)
     return f"""
     Job Title: {job['title']}
     Skills: {job['skills']}
@@ -144,7 +158,7 @@ def calculate_final_score(semantic_score, experience_score, skill_score):
 # Gets a score based on the skills the person has and is missing.
 def calculate_skill_score(candidate_profile, job):
     candidate_set = {
-        skill.lower()
+        skill.lower().strip()
         for skill in candidate_profile["skills"]
     }
 
@@ -156,7 +170,10 @@ def calculate_skill_score(candidate_profile, job):
     matching = candidate_set & job_set
     missing = job_set - candidate_set
 
-    skill_score = (len(matching) / len(job_set)) * 100
+    if job_set:
+        skill_score = (len(matching) / len(job_set)) * 100
+    else: 
+        skill_score = 0
 
     return {
         "overall_score": skill_score,
@@ -168,10 +185,15 @@ def calculate_skill_score(candidate_profile, job):
 def get_ranked_jobs(profile, jobs_df):
     ranked_jobs = []
 
-    candidate_embedding = generate_embedding(build_nlp_candidate(profile))
+    # Retrieve the complete resume text.
+    candidate_text = profile.get("candidate_text", "")
+
+    # Use the structured candidate profile only as a fallback.
+    if not isinstance(candidate_text, str) or not candidate_text.strip():
+        candidate_text = build_nlp_candidate(profile)
 
     for _, job in jobs_df.iterrows():
-        result = ai_nlp_match_score(profile, job, candidate_embedding)
+        result = ai_nlp_match_score(profile, job, candidate_text)
 
         ranked_jobs.append({
             "title": job["title"],
@@ -191,10 +213,10 @@ def get_ranked_jobs(profile, jobs_df):
     return ranked_jobs
 
 # Generates the match score using AI tools that will be used for the rankings.
-def ai_nlp_match_score(candidate_profile, job, candidate_embedding):
+def ai_nlp_match_score(candidate_profile, job, candidate_text):
     job_embedding = generate_embedding(build_job_text(job))
 
-    semantic_score = calculate_semantic_score(candidate_embedding, job_embedding)
+    semantic_score =  semantic_matcher.semantic_similarity(candidate_text, job_embedding)
 
     experience_score = resume.calculate_experience_score(
         candidate_profile["experience"],
