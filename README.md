@@ -8,12 +8,12 @@ This repository is organized to support data exploration, AI agent collaboration
 
 ### 📁 `.github/`
 Contains configuration and instructions for the project's AI agents.
-* **`developer.agent.md`**: Prompt guidelines and behavioral instructions for the Coder/Developer AI agent.
-* **`planner.agent.md`**: Prompt guidelines and architectural instructions for the Planner/Architect AI agent.
+* **`agents/developer.agent.md`**: Prompt guidelines and behavioral instructions for the Coder/Developer AI agent.
+* **`agents/planner.agent.md`**: Prompt guidelines and architectural instructions for the Planner/Architect AI agent.
 
 ### 📁 `data/`
 Holds all datasets, testing materials, and raw inputs.
-* **`raw_resumes/`**: Directory containing unstructured applicant resumes in `.docx` format.
+* **`data/raw_resumes/`**: Contains unstructured applicant resumes in `.docx` format.
 * **`5_vacancies.csv`**: Full-text, real-world job descriptions serving as our target evaluation pool.
 * **`annotation_instructions.docx`**: Evaluation criteria established by a senior HR specialist for ground-truth ranking.
 * **`annotations-for-the-first-30-vacancies.txt`**: Ground-truth preference rankings from two independent annotators evaluating candidate CVs against the 5 vacancies.
@@ -23,12 +23,12 @@ Holds all datasets, testing materials, and raw inputs.
 
 ### 📁 `src/`
 Contains reusable backend logic and data processing scripts.
-* **`docx_parser.py`**: Utility script to parse and extract raw text from the `.docx` files in the `raw_resumes` folder.
+* **`docx_parser.py`**: Utility script to parse and extract raw text from `.docx` files in `data/raw_resumes/`.
 * **`resume.py`**: The baseline heuristic matching script, calculating match scores using skill overlap and experience requirements.
 * **`job_scraper.py`**: Fetches and cleans live job descriptions from Greenhouse's public Job Board API.
 
 ### 📄 Root Files
-* **`app.py`**: The main Streamlit web application that serves as the final hybrid matching engine UI.
+* **`app.py`**: The Streamlit entry point; it loads the pages in `pages/`.
 * **`career_match.ipynb`**: The primary Jupyter Notebook for data exploration, running the Sentence Transformer models, and calculating evaluation metrics (Spearman correlation).
 * **`project_checklist.md`**: The step-by-step execution plan and task tracker for the team.
 * **`project_proposal.md`**: The finalized academic project proposal detailing motivation, methodology, and evaluation strategies.
@@ -37,7 +37,7 @@ Contains reusable backend logic and data processing scripts.
 * **`model_connect_test.py`**: Diagnostic script to verify Ollama connectivity, RAM-based model selection, vector embeddings, and structured JSON output.
 
 
-## Run the local website
+## Setup
 
 Open a terminal in the project folder (the folder containing `app.py` and
 `requirements.txt`). The commands below create a virtual environment using
@@ -70,66 +70,14 @@ version such as `py -3.12`. On macOS/Linux, use the appropriate installed
 If you already created `.venv`, skip the first command. You only need to
 install dependencies again if `requirements.txt` changes.
 
-### Start the website
-
-Whenever you want to run the website, open a terminal in the project folder.
-Use the matching command for your operating system:
-
-**Windows PowerShell:**
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run app.py
-```
-
-**macOS/Linux:**
-```bash
-.venv/bin/python -m streamlit run app.py
-```
-
-Open [http://localhost:8501](http://localhost:8501) in your browser (or use
-the `Local URL` printed by Streamlit). Keep the terminal running while using
-the website. Press `Ctrl+C` there to stop it.
-
-The first time you open an AI/NLP page, Sentence Transformers downloads the
-`all-MiniLM-L6-v2` model. An internet connection is needed for this download,
-and that first page load may take longer.
-
-## Live Job Board Fetching (Greenhouse)
-
-The live job fetcher (`src/job_scraper.py`) pulls real-time postings from Greenhouse's public Job Board API using a company's **board slug**:
-
-```text
-https://boards-api.greenhouse.io/v1/boards/{company_slug}/jobs?content=true
-```
-
-### 1. How to Find Any Company's Slug
-1. **Check the Job URL:** Open a company's Greenhouse job posting and copy the path segment immediately following `greenhouse.io/`:
-   * `https://greenhouse.io` → slug is **`stripe`**
-   * `https://greenhouse.io` → slug is **`discord`**
-2. **Search via Google:** Search `site:job-boards.greenhouse.io "<Company Name>"` to locate their hosted board URL.
-3. **Verify in Browser:** Paste `https://boards-api.greenhouse.io/v1/boards/<slug>/jobs` into your browser—if valid, it will return a live JSON feed of open roles.
-
-**Ready-to-Use Example Slugs:** `discord`, `stripe`, `airbnb`, `cloudflare`, `databricks`, `anthropic`, `figma`
-
-### 2. How to Customize the Target Company in Code
-To change the default company, role filter, or number of fetched jobs, update the `fetch_demo_jobs()` parameters in **`src/job_scraper.py`** (or pass them from **`pages/resume_matcher.py`**):
-
-```python
-# In src/job_scraper.py
-jobs = fetch_demo_jobs(
-    company_slug="stripe",   # Replace with any valid Greenhouse board slug
-    keyword="engineer",      # Filter job titles by keyword (use "" for all roles)
-    limit=5                  # Maximum number of matching jobs to return
-)
-```
-
 ## Local LLM Setup (Ollama)
 
-Career-Match AI uses [Ollama](https://ollama.com) to run local embedding and reasoning models on your machine without external API keys.
+The AI resume matching workflow combines Sentence Transformers semantic embeddings with skill and experience scores. It then uses the Qwen3 model through Ollama to explain the match and suggest improvements. Complete this setup to use those AI analysis features. The models run locally without external API keys.
 
 ### 1. Install Ollama
 
 #### Windows
-1. Download the installer from [://ollama.com](https://://ollama.com) and run `OllamaSetup.exe`.
+1. Download the installer from [ollama.com](https://ollama.com) and run `OllamaSetup.exe`.
 2. Once installed, Ollama runs in the background at `http://localhost:11434`.
 3. Verify in PowerShell:
    ```powershell
@@ -137,7 +85,7 @@ Career-Match AI uses [Ollama](https://ollama.com) to run local embedding and rea
    ```
 
 #### macOS
-1. Download from [://ollama.com](https://://ollama.com) (or install via Homebrew: `brew install ollama`).
+1. Download from [ollama.com](https://ollama.com) (or install via Homebrew: `brew install ollama`).
 2. Drag **Ollama** into your **Applications** folder and launch it once to register the CLI symlink.
 3. Verify in Terminal *(Apple Silicon M-series chips automatically use Metal GPU acceleration)*:
    ```bash
@@ -147,7 +95,7 @@ Career-Match AI uses [Ollama](https://ollama.com) to run local embedding and rea
 #### Linux
 1. Run the official install script and start the background service:
    ```bash
-   curl -fsSL https://ollama.com | sh
+   curl -fsSL https://ollama.com/install.sh | sh
    sudo systemctl enable --now ollama
    ```
 2. Verify in Terminal:
@@ -183,7 +131,7 @@ Run these commands in your terminal to download the embedding model and the Qwen
 
 ### 4. Verify Connection (`model_connect_test.py`)
 
-With your `.venv` set up (from **First-time setup** above), run the diagnostic test to verify server health, RAM detection, embeddings, and JSON output:
+With your `.venv` set up (from **First-time setup** above), make sure Ollama is fully stopped, including its tray app, before running this test. The script starts Ollama with its configured hardware environment, checks server health, RAM detection, embeddings, and JSON output, then shuts down the server it started:
 
 **Windows PowerShell:**
 ```powershell
@@ -194,6 +142,9 @@ With your `.venv` set up (from **First-time setup** above), run the diagnostic t
 ```bash
 .venv/bin/python model_connect_test.py
 ```
+
+After the test finishes, start Ollama again before using the Qwen-powered AI
+analysis page in the website.
 
 ### 5. Developer Quick Reference: Local Inference
 
@@ -233,4 +184,58 @@ response = ollama.generate(
 
 data = json.loads(response["response"])
 print(json.dumps(data, indent=2))
+```
+
+## Running the Local Website
+
+After completing **First-time setup** above, open a terminal in the project
+folder and run the matching command for your operating system:
+
+**Windows PowerShell:**
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+**macOS/Linux:**
+```bash
+.venv/bin/python -m streamlit run app.py
+```
+
+Streamlit can start while Ollama is off. Start Ollama before using the
+AI/NLP Analytics page, which calls Qwen3 to generate match explanations and
+improvement suggestions. Keep Ollama running while using that page.
+
+Open [http://localhost:8501](http://localhost:8501) in your browser (or use
+the `Local URL` printed by Streamlit). Keep the terminal running while using
+the website. Press `Ctrl+C` there to stop it.
+
+The first time you open an AI/NLP page, Sentence Transformers downloads the
+`all-MiniLM-L6-v2` model. An internet connection is needed for this download,
+and that first page load may take longer.
+
+## Live Job Board Fetching (Greenhouse)
+
+The live job fetcher (`job_scraper.py` in the repository root) pulls real-time postings from Greenhouse's public Job Board API using a company's **board slug**:
+
+```text
+https://boards-api.greenhouse.io/v1/boards/{company_slug}/jobs?content=true
+```
+
+### 1. How to Find Any Company's Slug
+1. **Check the Job URL:** Open a company's Greenhouse-hosted job board and copy the path segment after the domain. For example, `https://boards.greenhouse.io/acme` has the slug `acme`; the public URL may also use `https://job-boards.greenhouse.io/acme`.
+2. **Search via Google:** Search `site:job-boards.greenhouse.io "<Company Name>"` to locate their hosted board URL.
+3. **Verify in Browser:** Paste `https://boards-api.greenhouse.io/v1/boards/<slug>/jobs` into your browser—if valid, it will return a live JSON feed of open roles.
+
+**Ready-to-Use Example Slugs:** `discord`, `stripe`, `airbnb`, `cloudflare`, `databricks`, `anthropic`, `figma`
+
+### 2. How to Customize the Target Company in Code
+To change the company, role filter, or number of fetched jobs in this standalone example, update the `fetch_demo_jobs()` parameters in **`job_scraper.py`**. The current resume matcher page does not call this fetcher.
+
+```python
+# In job_scraper.py
+jobs = fetch_demo_jobs(
+    company_slug="stripe",   # Replace with any valid Greenhouse board slug
+    keyword="engineer",      # Filter job titles by keyword (use "" for all roles)
+    limit=5                  # Maximum number of matching jobs to return
+)
 ```
