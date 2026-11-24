@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def fetch_demo_jobs(company_slug="discord", keyword="engineer", limit=5):
+def fetch_demo_jobs(company_slug="discord", keyword="engineer", limit=10):
     url = f"https://boards-api.greenhouse.io/v1/boards/{company_slug}/jobs?content=true"
 
     response = requests.get(url, timeout=10)
@@ -44,4 +44,4 @@ if __name__ == "__main__":
 
     for j in jobs:
         print(f"Title: {j['title']} ({j['location']})")
-        print(f"Preview: {j['description'][:150]}...\n")
+        print(f"Preview: {j['description']}\n")
