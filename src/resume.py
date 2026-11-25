@@ -13,7 +13,7 @@ def clean_skills(skill_string):
         }
 
     return {
-        skill.strip()
+        skill.strip().lower()
         for skill in skill_string.split(",")
     }
 
@@ -98,5 +98,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
