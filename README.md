@@ -105,7 +105,7 @@ The AI resume matching workflow combines Sentence Transformers semantic embeddin
 
 ### 2. Pull Required Models
 
-Run these commands in your terminal to download the embedding model and the Qwen3 reasoning model matching your system RAM:
+Run these commands in your terminal to download the embedding model and whichever Qwen3 model(s) you want to use:
 
 1. **Pull the Embedding Model:**
    ```bash
@@ -113,13 +113,15 @@ Run these commands in your terminal to download the embedding model and the Qwen
    ```
 
 2. **Pull the Qwen3 Model(s):**
-   Pull the tier that matches your hardware (or pull all three if sharing across different machines):
+   Pull one or more models. The sizes below are suggestions; the app lets you choose among the Qwen3 models installed in Ollama:
 
    | System RAM | Model Tier | Ollama Pull Command |
    | :--- | :--- | :--- |
    | **≤ 8 GB RAM** | **Qwen3 1.7B** | `ollama pull qwen3:1.7b` |
    | **16 GB RAM** | **Qwen3 4B** | `ollama pull qwen3:4b` |
    | **32 GB RAM** | **Qwen3 8B** | `ollama pull qwen3:8b` |
+
+On the AI/NLP Analytics page, select an installed Qwen3 model before generating reviews. The app does not automatically select a model. It labels 1.7B as the lightest option, 4B as a middle ground, and 8B as larger and potentially slower. Suggested starting contexts are 4,096 tokens for 1.7B and 4,096 or 8,192 for 4B and 8B. These are starting points, not guarantees; larger contexts use more memory and may slow responses. You can choose a different context size. The diagnostic script `model_connect_test.py` still reports a RAM-based suggested model independently.
 
 ### 3. Hardware Acceleration Notes
 * **NVIDIA & Apple Silicon:** Ollama automatically detects CUDA (NVIDIA) and Metal (Mac) with no extra setup.
@@ -203,7 +205,9 @@ folder and run the matching command for your operating system:
 
 Streamlit can start while Ollama is off. Start Ollama before using the
 AI/NLP Analytics page, which calls Qwen3 to generate match explanations and
-improvement suggestions. Keep Ollama running while using that page.
+improvement suggestions. It generates a separate review for each ranked job,
+including the job title, posting details, match scores, skill gaps, and next
+steps. Keep Ollama running while using that page.
 
 Open [http://localhost:8501](http://localhost:8501) in your browser (or use
 the `Local URL` printed by Streamlit). Keep the terminal running while using
@@ -228,8 +232,12 @@ https://boards-api.greenhouse.io/v1/boards/{company_slug}/jobs?content=true
 
 **Ready-to-Use Example Slugs:** `discord`, `stripe`, `airbnb`, `cloudflare`, `databricks`, `anthropic`, `figma`
 
-### 2. How to Customize the Target Company in Code
-To change the company, role filter, or number of fetched jobs in this standalone example, update the `fetch_demo_jobs()` parameters in **`job_scraper.py`**. The current resume matcher page does not call this fetcher.
+### 2. Use Live Jobs in the App
+On the **AI/NLP Analytics** page, choose **Live Greenhouse jobs**, enter the company's board slug, optionally filter job titles, and set the maximum number of postings. The fetched postings are ranked against the uploaded resume alongside the saved sample-jobs option. Each result uses the full posting description when Greenhouse provides one, and the top recommendation includes a link to the posting.
+
+The app estimates required experience only when the posting explicitly states a minimum. Skills are detected from the posting using the project's skill list, so live-job skill gaps may omit skills that are not in that list. If no minimum is detected, experience is treated as unspecified for scoring.
+
+The standalone `job_scraper.py` example can still be run directly. Its `fetch_demo_jobs()` parameters control the same board slug, title filter, and result limit.
 
 ```python
 # In job_scraper.py

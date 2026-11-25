@@ -196,13 +196,16 @@ def get_ranked_jobs(profile, jobs_df):
         result = ai_nlp_match_score(profile, job, candidate_text)
 
         ranked_jobs.append({
+            "job_id": job.get("job_id", job["title"]),
             "title": job["title"],
             "score": result["final_score"],
             "semantic_score": result["semantic_score"],
             "experience_score": result["experience_score"],
             "skill_score": result["skill_score"],
             "missing": result["missing"],
-            "matching": result["matching"]
+            "matching": result["matching"],
+            "location": job.get("location", ""),
+            "url": job.get("url", ""),
         })
 
     ranked_jobs.sort(

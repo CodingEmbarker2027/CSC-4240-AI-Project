@@ -5,12 +5,14 @@ import numpy as np
 # Unless a resume has been uploaded, they cannot
 # access the plots.
 if "job_results" not in st.session_state:
-    st.warning("Please upload a resume first")
+    st.info("Upload a resume on the AI/NLP Analytics page first. Once its jobs are ranked, their charts will appear here.")
     st.stop()
 
 results = st.session_state["job_results"]
+result_source = st.session_state.get("job_results_source", "Unknown job source")
 
-st.header("Resume Results")
+st.header("Match Result Visualizations")
+st.caption(f"Results source: {result_source}")
 
 top_job = results[0]
 top_jobs = results[:4]
@@ -20,15 +22,14 @@ titles = [job["title"] for job in top_jobs]
 scores = [job["score"] for job in top_jobs]
 
 fig, ax = plt.subplots(figsize=(10, 5))
-
-ax.bar(titles, scores, color="purple")
+ax.barh(titles, scores, color="purple")
 ax.invert_yaxis()
-
 ax.set_xlabel("Match Score (%)")
-ax.set_ylabel("Top Job Recommendations")
-
-plt.show()
-st.pyplot(plt)
+ax.set_xlim(0, 100)
+ax.set_ylabel("Recommended Jobs")
+ax.set_title("Top Job Matches")
+fig.tight_layout()
+st.pyplot(fig, clear_figure=True)
 
 st.divider()
 
@@ -68,9 +69,9 @@ angles = np.linspace(
 
 angles += angles[:1]
 
-if top_job["score"] >= 85:
+if selected_job["score"] >= 85:
     color = "green"
-elif top_job["score"] >= 70:
+elif selected_job["score"] >= 70:
     color = "orange"
 else:
     color = "red"
@@ -81,13 +82,13 @@ ax.fill(angles, values, color=color, alpha=0.25)
 ax.set_xticks(angles[:-1])
 ax.set_xticklabels(categories)
 
-plt.title("Best Job Match Breakdown")
-st.pyplot(figure)
+ax.set_title(f"{selected_job['title']} Match Breakdown")
+st.pyplot(figure, clear_figure=True)
 
 scores = {
-    "Skills": top_job["skill_score"],
-    "Semantic": top_job["semantic_score"],
-    "Experience": top_job["experience_score"]
+    "Skills": selected_job["skill_score"],
+    "Semantic": selected_job["semantic_score"],
+    "Experience": selected_job["experience_score"]
 }
 
 strongest = max(scores, key=scores.get)
@@ -123,7 +124,7 @@ job_titles = [job["title"] for job in results[:10]]
 
 scores = np.array([semantic_scores])
 
-fig, ax = plt.subplots(figsize=(8, 2))
+fig, ax = plt.subplots(figsize=(10, 3), constrained_layout=True)
 
 heatmap = ax.imshow(scores, cmap="YlGn", aspect="auto")
 ax.set_xticks(np.arange(len(job_titles)))
@@ -134,6 +135,7 @@ ax.set_yticklabels(["Resume"])
 for i, score in enumerate(semantic_scores):
     ax.text(i, 0, f"{score:.0f}", ha="center", va="center", color="black")
 
-plt.colorbar(heatmap, label="Semantic Similarity")
-st.pyplot(fig)
+colorbar = fig.colorbar(heatmap, ax=ax)
+colorbar.set_label("Semantic Similarity")
+st.pyplot(fig, clear_figure=True)
 st.divider()

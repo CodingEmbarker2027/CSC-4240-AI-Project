@@ -5,6 +5,24 @@ import dictionary as dct
 from docx import Document
 from src import resume
 
+
+def list_installed_qwen_models():
+    """Return installed Qwen3 model names reported by the local Ollama server."""
+    response = ollama.list()
+    models = response.get("models", []) if isinstance(response, dict) else getattr(response, "models", [])
+    names = []
+
+    for model in models:
+        if isinstance(model, dict):
+            name = model.get("model") or model.get("name")
+        else:
+            name = getattr(model, "model", None) or getattr(model, "name", None)
+
+        if name and name.lower().startswith("qwen3"):
+            names.append(name)
+
+    return sorted(set(names))
+
 # Extracts text from a PDF file
 def extract_pdf_text(file):
     text = ""
@@ -118,15 +136,19 @@ def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp)
 
 # Used for the Ollama model to generate prompts about improvements, skills needed, and
 # whether the applicant is worth an interview.
-def generate_analysis(prompt):
+def generate_analysis(prompt, model_name, context_length):
+    if not model_name:
+        raise ValueError("Choose an installed Qwen3 model before generating a review.")
+
     response = ollama.chat(
-        model="qwen3:1.7b",
+        model=model_name,
         messages=[
             {
                 "role": "user",
                 "content": prompt
             }
-        ]
+        ],
+        options={"num_ctx": context_length},
     )
 
     return response["message"]["content"]
