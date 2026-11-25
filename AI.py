@@ -123,7 +123,7 @@ def build_job_text(job):
             return str(description)
 
     # Support other common description-column names.
-    for column in ["job_descritpion","description", "job_desc"]:
+    for column in ["job_description","description", "job_desc"]:
         if column in job.index:
             description = job[column]
 
@@ -214,9 +214,9 @@ def get_ranked_jobs(profile, jobs_df):
 
 # Generates the match score using AI tools that will be used for the rankings.
 def ai_nlp_match_score(candidate_profile, job, candidate_text):
-    job_embedding = generate_embedding(build_job_text(job))
+    job_text = build_job_text(job)
 
-    semantic_score =  semantic_matcher.semantic_similarity(candidate_text, job_embedding)
+    semantic_score =  semantic_matcher.semantic_similarity(candidate_text, job_text)
 
     experience_score = resume.calculate_experience_score(
         candidate_profile["experience"],
