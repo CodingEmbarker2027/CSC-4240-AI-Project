@@ -4,7 +4,6 @@ from pathlib import Path
 import pandas as pd
 import dictionary as dct
 from sentence_transformers import SentenceTransformer, util
-from sklearn.metrics.pairwise import cosine_similarity
 import streamlit as st
 from src import resume, semantic_matcher
 
@@ -22,10 +21,6 @@ resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=Tr
 interview_embeddings = model.encode(dct.INTERVIEW_EXAMPLES, convert_to_tensor=True)
 cover_letter_embeddings = model.encode(dct.COVER_LETTER_EXAMPLES, convert_to_tensor=True)
 research_embeddings = model.encode(dct.RESEARCH_EXAMPLES, convert_to_tensor=True)
-
-# Embed the text
-def generate_embedding(text):
-    return model.encode(text, convert_to_tensor=True)
 
 # Using a dictionary of skills, find the skills in the resume
 def extract_skills_nlp(text):
@@ -99,14 +94,6 @@ def build_candidate_profile_nlp(resume_text):
         "education": extract_education_nlp(resume_text)
     }
 
-# Used as a baseline for the AI/NLP portion of this project
-def build_candidate_text(candidate):
-    return f"""
-    Name: {candidate['name']}
-    Skills: {candidate['skills']}
-    Experience: {candidate['experience_years']} years
-    """
-
 def build_nlp_candidate(profile):
     return f"""
     Candidate Skills: {' '.join(profile['skills'])}
@@ -134,18 +121,6 @@ def build_job_text(job):
     Skills: {job['skills']}
     Experience: {job['experience_required']} years
     """
-
-# With the two previous functions, compute a semantic score based on the candidate and job.
-def ai_match_score(candidate, job):
-    candidate_text = build_candidate_text(candidate)
-    job_text = build_job_text(job)
-
-    candidate_embedding = model.encode([candidate_text])
-    job_embedding = model.encode([job_text])
-
-    similarity = cosine_similarity(candidate_embedding, job_embedding)
-
-    return similarity[0][0] * 100
 
 # A final calculation of the actual job score based on certain criteria
 def calculate_final_score(semantic_score, experience_score, skill_score):
@@ -240,12 +215,6 @@ def ai_nlp_match_score(candidate_profile, job, candidate_text):
         "missing": skill_result["missing"],
         "matching": skill_result["matching"]
     }
-
-# Calculates the similarities in the way the skills align with the candidate and job
-def calculate_semantic_score(candidate_embedding, job_embedding):
-    similarity = util.cos_sim(candidate_embedding, job_embedding)
-
-    return similarity.item() * 100
 
 # Based on certain criteria, classify whether the file is a resume or if it is
 # another file similarly used for jobs that is not a resume.

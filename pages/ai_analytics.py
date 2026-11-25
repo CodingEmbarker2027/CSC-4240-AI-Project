@@ -100,9 +100,23 @@ if job_source == "Live Greenhouse jobs":
         limit = st.number_input("Maximum jobs", min_value=1, max_value=50, value=10)
 
     try:
-        live_jobs = fetch_greenhouse_jobs(company_slug, keyword.strip(), int(limit))
+        with st.spinner("Loading live Greenhouse postings..."):
+            live_jobs = fetch_greenhouse_jobs(company_slug, keyword.strip(), int(limit))
+    except requests.HTTPError as error:
+        if error.response is not None and error.response.status_code == 404:
+            st.error(
+                f"Greenhouse could not find a job board for `{company_slug}`. "
+                "The value must be the employer's Greenhouse board slug, not a company "
+                "name guess or the full careers URL. The board may also have been removed "
+                "or the employer may not use Greenhouse.\n\n"
+                "For help finding and checking a board slug, see the "
+                "**Live Job Board Fetching (Greenhouse)** section near the bottom of the README."
+            )
+        else:
+            st.error(f"Could not load Greenhouse jobs: {error}")
+        live_jobs = []
     except (ValueError, requests.RequestException) as error:
-        st.error(f"Could not load that Greenhouse board: {error}")
+        st.error(f"Could not load Greenhouse jobs: {error}")
         live_jobs = []
     except Exception as error:
         st.error(f"Could not load Greenhouse jobs: {error}")
@@ -148,7 +162,8 @@ if uploaded_file is not None:
     if result["document_type"] == "Resume":
         candidate_profile = UI.build_candidate_function(uploaded_file)
         if jobs_df.empty:
-            st.warning("There are no jobs available to rank. Choose saved jobs or load live postings.")
+            if job_source == "Saved sample jobs":
+                st.warning("There are no saved jobs available to rank.")
             st.stop()
         results = AI.get_ranked_jobs(candidate_profile, jobs_df)
         # Save as soon as ranking succeeds so the visualizations page is usable
