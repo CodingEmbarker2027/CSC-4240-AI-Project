@@ -3,7 +3,6 @@ import AI
 import pdfplumber
 import dictionary as dct
 from docx import Document
-from src import resume
 
 
 def list_installed_qwen_models():
@@ -69,69 +68,6 @@ def build_candidate_function(file_path):
         "education": AI.extract_education_nlp(resume_text),
         "experience": AI.experience_years_nlp(resume_text),
         "candidate_text": resume_text
-    }
-
-# For the uploaded resume, find the best jobs based on the details.
-def match_uploaded_resume_to_jobs(candidate_profile):
-    results = []
-
-    candidate_experience = candidate_profile["experience"]
-
-    for _, job in resume.jobs_df.iterrows():
-        result = resume_keyword_match(
-            candidate_profile["skills"],
-            job["skills"],
-            candidate_experience,
-            job["experience_required"]
-        )
-
-        results.append({
-            "job_title": job["title"],
-            "overall_score": result["overall_score"],
-            "matching_skills": result["matching"],
-            "missing_skills": result["missing"]
-        })
-
-    results.sort(
-        key=lambda x: x["overall_score"],
-        reverse=True
-    )
-
-    return results
-
-# Gathers the missing skills, matching skills, and score based on the amount of skills
-# the applicant has.
-def resume_keyword_match(resume_skills, job_skills, candidate_exp, required_exp):
-    if isinstance(job_skills, str):
-        job_skills = [
-            skill.strip()
-            for skill in job_skills.split(",")
-        ]
-
-    resume_set = {
-        skill.strip().lower()
-        for skill in resume_skills
-    }
-    job_set = {
-        skill.strip().lower()
-        for skill in job_skills
-    }
-
-    matching = resume_set & job_set
-    missing = job_set - resume_set
-
-    skill_score = (len(matching) / len(job_set)) * 100 if job_set else 0
-    experience_score = resume.calculate_experience_score(candidate_exp, required_exp)
-
-    if len(matching) == 0:
-        overall_score = 0
-    else:
-        overall_score = (skill_score * 0.8) + (experience_score * 0.2)
-
-    return {
-        "overall_score": overall_score,
-        "matching": list(matching),
-        "missing": list(missing)
     }
 
 # Used for the Ollama model to generate prompts about improvements, skills needed, and
