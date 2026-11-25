@@ -165,6 +165,7 @@ def calculate_skill_score(candidate_profile, job):
     job_set = {
         skill.lower().strip()
         for skill in job["skills"].split(",")
+        if skill.strip()
     }
 
     matching = candidate_set & job_set
@@ -325,4 +326,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
