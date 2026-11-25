@@ -225,6 +225,19 @@ The live job fetcher (`job_scraper.py` in the repository root) pulls real-time p
 https://boards-api.greenhouse.io/v1/boards/{company_slug}/jobs?content=true
 ```
 
+### Quick guide: find Greenhouse jobs by keyword
+
+1. **Search the official Greenhouse candidate portal:** Visit [MyGreenhouse Jobs](https://my.greenhouse.com/) to discover and follow roles from participating Greenhouse employers. You can create an account to save your profile and get job alerts.
+2. **Search public job boards with keywords:** In Google, try queries such as:
+   ```text
+   site:job-boards.greenhouse.io "data analyst" Python remote
+   site:job-boards.greenhouse.io "software engineer" Kubernetes "New York"
+   ```
+   Replace the title, skill, and location terms with what you want. For older Greenhouse board links, also try `site:boards.greenhouse.io`.
+3. **Verify the opening:** Open the result on the employer's own career page and confirm the role is still open. Copy the company's board slug from its Greenhouse URL, then enter that slug in the app's **Live Greenhouse jobs** settings.
+
+The app's optional keyword filter matches **job titles**. Use MyGreenhouse or a search query like the examples above to find postings by skills or other words in the description.
+
 ### 1. How to Find Any Company's Slug
 1. **Check the Job URL:** Open a company's Greenhouse-hosted job board and copy the path segment after the domain. For example, `https://boards.greenhouse.io/acme` has the slug `acme`; the public URL may also use `https://job-boards.greenhouse.io/acme`.
 2. **Search via Google:** Search `site:job-boards.greenhouse.io "<Company Name>"` to locate their hosted board URL.
