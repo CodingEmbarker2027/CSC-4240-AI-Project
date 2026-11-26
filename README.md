@@ -4,7 +4,7 @@ Career-Match AI is an NLP-powered application designed to evaluate resume-to-job
 
 ## Project Structure
 
-This repository is organized to support data exploration, AI agent collaboration, and the final web application.
+This repository contains the Streamlit resume-matching application as well as separate research, evaluation, and diagnostic materials. The research and diagnostic files below are retained for the broader project, but are not part of the Streamlit app's normal runtime.
 
 ### 📁 `.github/`
 Contains configuration and instructions for the project's AI agents.
@@ -13,28 +13,35 @@ Contains configuration and instructions for the project's AI agents.
 
 ### 📁 `data/`
 Holds all datasets, testing materials, and raw inputs.
-* **`data/raw_resumes/`**: Contains unstructured applicant resumes in `.docx` format.
-* **`5_vacancies.csv`**: Full-text, real-world job descriptions serving as our target evaluation pool.
-* **`annotation_instructions.docx`**: Evaluation criteria established by a senior HR specialist for ground-truth ranking.
-* **`annotations-for-the-first-30-vacancies.txt`**: Ground-truth preference rankings from two independent annotators evaluating candidate CVs against the 5 vacancies.
-* **`gpt_dataset.csv`**: A corpus of 400 long-form, unstructured natural language resumes categorized by tech disciplines.
-* **`job_list.csv`**: 15 structured target roles with minimum experience requirements and core skills.
-* **`resume_list.csv`**: 50 structured candidate profiles containing target roles, education, experience, and skills.
+* **`job_list.csv`** and **`resume_list.csv`**: Structured sample jobs and candidates used by the Streamlit baseline matcher.
+* **`gpt_dataset.csv`**: Resume examples used by the Streamlit document classifier.
+* **`raw_resumes/`**, **`5_vacancies.csv`**, **`annotation_instructions.docx`**, and **`annotations-for-the-first-30-vacancies.txt`**: Resume and vacancy data plus human annotation materials for the separate benchmark and evaluation workflow; these are not loaded by the Streamlit app.
+* **`ai_rankings.csv`**: Benchmark rankings output written under `data/` by `rankings.py` or the notebook. It is not used by the Streamlit app.
 
 ### 📁 `src/`
-Contains reusable backend logic and data processing scripts.
-* **`docx_parser.py`**: Utility script to parse and extract raw text from `.docx` files in `data/raw_resumes/`.
-* **`resume.py`**: The baseline heuristic matching script, calculating match scores using skill overlap and experience requirements.
-* **`job_scraper.py`**: Fetches and cleans live job descriptions from Greenhouse's public Job Board API.
+Contains reusable logic used by the app and research utilities.
+* **`resume.py`**: Loads the structured sample data and provides baseline skill/experience matching for the Streamlit pages.
+* **`semantic_matcher.py`**: Provides Sentence Transformer similarity scoring used by the Streamlit AI/NLP matching page.
+* **`docx_parser.py`**: Extracts text from benchmark `.docx` resumes for the standalone ranking workflow; the app uses its own upload extraction functions.
 
 ### 📄 Root Files
+**Streamlit application**
 * **`app.py`**: The Streamlit entry point; it loads the pages in `pages/`.
-* **`career_match.ipynb`**: The primary Jupyter Notebook for data exploration, running the Sentence Transformer models, and calculating evaluation metrics (Spearman correlation).
+* **`pages/`**: The app's Resume Matcher, AI/NLP Analytics, and Model Evaluations screens.
+* **`AI.py`**, **`UI.py`**, **`dictionary.py`**, and **`job_scraper.py`**: NLP matching/classification, document upload and Ollama helpers, skill and document phrase lists, and live Greenhouse job retrieval used by the app.
+
+**Research and diagnostic files (not used by the Streamlit app)**
+* **`rankings.py`**: Standalone benchmark script that ranks resumes in `data/raw_resumes/` against `data/5_vacancies.csv` and writes `data/ai_rankings.csv`.
+* **`career_match.ipynb`**: Notebook for benchmark exploration and evaluation. It also generates `data/ai_rankings.csv`, so it overlaps with `rankings.py`.
+* **`baselineplots.py`**: Exploratory plotting file; its plotting examples are currently commented out and it is not imported by the app.
+* **`model_connect_test.py`**: Standalone Ollama connectivity, hardware-selection, embedding, and response-format diagnostic.
+* **Root-level `ai_rankings.csv`**: A separate checked-in ranking CSV. The current benchmark script and notebook write to `data/ai_rankings.csv`; the root-level file is not read by the app.
+
+**Project documentation and configuration**
 * **`project_checklist.md`**: The step-by-step execution plan and task tracker for the team.
-* **`project_proposal.md`**: The finalized academic project proposal detailing motivation, methodology, and evaluation strategies.
+* **`project_proposal.md`**: The academic project proposal detailing motivation, methodology, and evaluation strategies.
 * **`requirements.txt`**: List of Python dependencies required to run the project.
 * **`.gitignore`**: Specifies intentionally untracked files (like virtual environments and caches) that Git should ignore.
-* **`model_connect_test.py`**: Diagnostic script to verify Ollama connectivity, RAM-based model selection, vector embeddings, and structured JSON output.
 
 
 ## Setup
