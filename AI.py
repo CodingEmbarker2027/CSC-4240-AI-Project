@@ -1,26 +1,61 @@
 import re
+from concurrent.futures import Future, ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
+from threading import Lock
 import pandas as pd
 import dictionary as dct
-from sentence_transformers import SentenceTransformer, util
 import streamlit as st
-from src import resume, semantic_matcher
+from src import resume
+
+_model_preload_executor = ThreadPoolExecutor(max_workers=1)
+_model_preload_future: Future[None] | None = None
+_model_preload_lock = Lock()
+
 
 # Reduces the amount of resources used in Streamlit when loading the page
 @st.cache_resource
 def load_model():
+    from src import semantic_matcher
+
     return semantic_matcher.get_model()
-model = load_model()
 
-# Loads in the gpt_df to compare it with other resumes
-gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
 
-# For later on when checking to see whether a .docx/.pdf file is a resume
-resume_embeddings = model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True)
-interview_embeddings = model.encode(dct.INTERVIEW_EXAMPLES, convert_to_tensor=True)
-cover_letter_embeddings = model.encode(dct.COVER_LETTER_EXAMPLES, convert_to_tensor=True)
-research_embeddings = model.encode(dct.RESEARCH_EXAMPLES, convert_to_tensor=True)
+@st.cache_resource
+def load_document_reference_embeddings():
+    gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
+    model = load_model()
+    return (
+        model.encode(gpt_df["Resume"].tolist(), convert_to_tensor=True),
+        model.encode(dct.INTERVIEW_EXAMPLES, convert_to_tensor=True),
+        model.encode(dct.COVER_LETTER_EXAMPLES, convert_to_tensor=True),
+        model.encode(dct.RESEARCH_EXAMPLES, convert_to_tensor=True),
+    )
+
+
+def preload_models():
+    load_model()
+    load_document_reference_embeddings()
+
+
+def start_model_preload():
+    global _model_preload_future
+
+    with _model_preload_lock:
+        if _model_preload_future is None:
+            _model_preload_future = _model_preload_executor.submit(preload_models)
+
+
+def get_model_preload_status():
+    if _model_preload_future is None or not _model_preload_future.done():
+        return "loading", None
+
+    error = _model_preload_future.exception()
+    if error is not None:
+        return "failed", error
+
+    return "ready", None
+
 
 # Using a dictionary of skills, find the skills in the resume
 def extract_skills_nlp(text):
@@ -193,9 +228,11 @@ def get_ranked_jobs(profile, jobs_df):
 
 # Generates the match score using AI tools that will be used for the rankings.
 def ai_nlp_match_score(candidate_profile, job, candidate_text):
+    from src import semantic_matcher
+
     job_text = build_job_text(job)
 
-    semantic_score =  semantic_matcher.semantic_similarity(candidate_text, job_text)
+    semantic_score = semantic_matcher.semantic_similarity(candidate_text, job_text)
 
     experience_score = resume.calculate_experience_score(
         candidate_profile["experience"],
@@ -219,6 +256,15 @@ def ai_nlp_match_score(candidate_profile, job, candidate_text):
 # Based on certain criteria, classify whether the file is a resume or if it is
 # another file similarly used for jobs that is not a resume.
 def classify_document(text):
+    from sentence_transformers import util
+
+    model = load_model()
+    (
+        resume_embeddings,
+        interview_embeddings,
+        cover_letter_embeddings,
+        research_embeddings,
+    ) = load_document_reference_embeddings()
     uploaded_embedding = model.encode(text, convert_to_tensor=True)
     scores = {}
 
@@ -291,6 +337,7 @@ def classify_document(text):
     }
 
 def main():
+    gpt_df = pd.read_csv(Path(__file__).resolve().parent / "data" / "gpt_dataset.csv")
     print(build_candidate_profile_nlp(gpt_df["Resume"].iloc[0]))
 
 if __name__ == "__main__":

@@ -20,6 +20,22 @@ def generate_job_review(prompt, model_name, context_length):
 
 st.title("AI Resume Matcher")
 
+AI.start_model_preload()
+
+
+@st.fragment(run_every=1)
+def render_model_preload_status():
+    model_preload_status, model_preload_error = AI.get_model_preload_status()
+    if model_preload_status == "loading":
+        st.markdown("AI matching models are :orange[loading] in the background. You can continue filling out the page.")
+    elif model_preload_status == "ready":
+        st.markdown("AI matching models are :green[ready] to use.")
+    else:
+        st.markdown(f"AI matching models could not be preloaded (:red[failed]). Details: {model_preload_error}")
+
+
+render_model_preload_status()
+
 with st.expander("AI review model settings", expanded=True):
     try:
         installed_qwen_models = UI.list_installed_qwen_models()

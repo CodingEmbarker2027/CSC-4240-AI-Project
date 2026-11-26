@@ -2,7 +2,7 @@ pandas
 numpy
 sentence-transformers
 scipy
-streamlit>=1.36
+streamlit>=1.37
 python-docx
 pdfplumber
 scikit-learn
