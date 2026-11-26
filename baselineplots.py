@@ -1,3 +1,5 @@
+"""Exploratory plotting examples for resume/job matching; all plot code is currently commented out."""
+
 import matplotlib.pyplot as plt
 import AI
 from collections import Counter
